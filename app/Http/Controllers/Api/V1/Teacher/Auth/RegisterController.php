@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1\Auth;
+namespace App\Http\Controllers\Api\V1\Teacher\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Auth\RegisterRequest;
@@ -14,13 +14,14 @@ class RegisterController extends Controller
     public function create(RegisterRequest $request) {
         return DB::transaction(function () use ($request){
 
-            $user = User::create($request->all());
-            Auth::login($user);
+            $teacher = User::create($request->all());
+            Auth::login($teacher);
 
-            $token = $user->createToken('access_token')->plainTextToken;
+            $token = $teacher->createToken('access_token')->plainTextToken;
 
             return response()->json([
-                'message' => 'User created Successfully.',
+                'message' => 'Teacher created Successfully.',
+                'Teacher'=>$teacher,
                 'access_token' => $token
             ],201);
         });

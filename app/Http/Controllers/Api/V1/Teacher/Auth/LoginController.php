@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1\Auth;
+namespace App\Http\Controllers\Api\V1\Teacher\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Auth\LoginRequest;
@@ -16,12 +16,13 @@ class LoginController extends Controller
 
             return response()->json(['message' => 'your provided credentials cannot be verified.'], 401);
         }
-        $user = Auth::user();
+        $teacher = Auth::user();
 
-        $token = $user->createToken('access_token')->plainTextToken;
+        $token = $teacher->createToken('access_token')->plainTextToken;
 
         return response()->json([
-            'message' => 'User logged in successfully.',
+            'message' => 'Teacher logged in successfully.',
+            'Teacher'=>$teacher,
             'access_token' => $token,
         ]);
     }
