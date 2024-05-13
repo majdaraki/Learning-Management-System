@@ -10,7 +10,8 @@ use App\Models\{
 };
 use App\Traits\{
     createVerificationCode,
-    Responses
+    Responses,
+    verifyCode
 
 };
 use Illuminate\Support\Facades\{
@@ -34,7 +35,7 @@ public function forgetPassword(Request $request)
     ]);
 
     $teacher = User::where('email', $validated['email'])->firstOrFail();
-    $verificationCode = $this->getOrCreateVerificationCode($validated['email']);
+    $verificationCode = $this->getOrCreateVerificationCode($validated['email'],'forget-password');
     Notification::route('mail', $validated['email'])
                 ->notify(new verfication_code($teacher, $verificationCode));
 

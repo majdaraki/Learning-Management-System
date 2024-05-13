@@ -34,7 +34,7 @@ public function forgetPassword(Request $request)
     ]);
 
     $admin = User::where('email', $validated['email'])->firstOrFail();
-    $verificationCode = $this->getOrCreateVerificationCode($validated['email']);
+    $verificationCode = $this->getOrCreateVerificationCode($validated['email'],'forget-password');
     Notification::route('mail', $validated['email'])
                 ->notify(new verfication_code($admin, $verificationCode));
 

@@ -12,5 +12,6 @@ class Code extends Model
         'email',
         'verification_code',
         'expires_at',
+        'type',
     ];
 }

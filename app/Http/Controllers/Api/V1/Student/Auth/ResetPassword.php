@@ -11,7 +11,9 @@ use App\Models\{
 
 use App\Traits\{
     Responses,
-    ExpierCode
+    ExpierCode,
+    verifyCode,
+
 
 };
 use Illuminate\Support\Facades\Mail;
@@ -26,26 +28,17 @@ use App\Notifications\verfication_code;
 
 class ResetPassword extends Controller{
 
-    use ExpierCode,Responses;
+    
+    use ExpierCode,Responses,verifyCode;
     public function verifyCode(Request $request)
     {
-        $request->validate([
-            'verification_code' => 'required',
-        ]);
+        public function verify(Request $request){
+            $request->validate([
+                'verification_code'=>'required'
+            ]);
+            return $this->verifyCode($request['verification_code']);
 
-        $code = Code::where('verification_code', $request->verification_code)
-                    ->first();
-
-        if (!$code) {
-            return $this->sudResponse('Code not correct !', 400);
         }
-
-        if ($this->isCodeExpired($code)) {
-            $code->delete();
-            return $this->sudResponse('Code has expired', 400);
-        }
-
-        return $this->sudResponse('Code has been confirmed');
     }
 
     public function resetPassword(Request $request)

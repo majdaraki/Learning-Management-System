@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('email');
             $table->string('verification_code')->nullable();
+            $table->string('type');
             $table->timestamp('expires_at')->nullable();
             $table->timestamps();
         });
