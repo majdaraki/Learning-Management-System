@@ -18,4 +18,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-include __DIR__ . '/Developers/Auth.php';
+include __DIR__ . '/Developers/Admin/Auth.php';
+include __DIR__ . '/Developers/Student/Auth.php';
+include __DIR__ . '/Developers/Teacher/Auth.php';
