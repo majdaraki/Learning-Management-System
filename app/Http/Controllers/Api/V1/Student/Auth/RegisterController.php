@@ -38,6 +38,7 @@ class RegisterController extends Controller
 
             return response()->json([
                 'message' => 'Code has been sent',
+                'student'=>$student,
                 'access_token' => $token
             ],201);
         });
