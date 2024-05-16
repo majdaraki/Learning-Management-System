@@ -28,10 +28,9 @@ use App\Notifications\verfication_code;
 
 class ResetPassword extends Controller{
 
-    
+
     use ExpierCode,Responses,verifyCode;
-    public function verifyCode(Request $request)
-    {
+
         public function verify(Request $request){
             $request->validate([
                 'verification_code'=>'required'
@@ -39,7 +38,7 @@ class ResetPassword extends Controller{
             return $this->verifyCode($request['verification_code']);
 
         }
-    }
+    
 
     public function resetPassword(Request $request)
     {

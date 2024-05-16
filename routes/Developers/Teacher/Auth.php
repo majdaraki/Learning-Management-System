@@ -18,6 +18,6 @@ Route::get('/logout', [LoginController::class, 'destroy'])->middleware('auth:san
 // Handle Forget Password Routes
 
 Route::post('forget-password',[ForgetPassword::class,'forgetPassword']);
-Route::post('verify',[ResetPassword::class,'verifyCode']);
+Route::post('verify',[ResetPassword::class,'verify']);
 Route::post('reset-password',[ResetPassword::class,'resetPassword']);
 });
