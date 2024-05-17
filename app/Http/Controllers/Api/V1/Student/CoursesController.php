@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1;
+namespace App\Http\Controllers\Api\V1\Student;
 
+use App\Filters\CourseFilters;
 use App\Http\Controllers\Controller;
 use App\Models\Course;
 use Illuminate\Http\Request;
@@ -9,11 +10,20 @@ use Illuminate\Http\Request;
 class CoursesController extends Controller
 {
     /**
+     * Create the controller instance.
+     */
+    public function __construct(protected CourseFilters $courseFilters)
+    {
+        //
+    }
+
+    /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        $courses = $this->courseFilters->applyFilters(Course::query())->get();
+        return $this->indexOrShowResponse('courses',$courses);
     }
 
     /**

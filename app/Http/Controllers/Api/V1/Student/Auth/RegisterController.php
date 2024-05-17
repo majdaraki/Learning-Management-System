@@ -11,9 +11,7 @@ use App\Models\{
 use App\Traits\{
     verifyCode,
     ExpierCode,
-    createVerificationCode,
-    Responses
-
+    createVerificationCode
 };
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\verfication_code;
@@ -23,7 +21,7 @@ use Illuminate\Support\Facades\DB;
 
 class RegisterController extends Controller
 {
-    use verifyCode,ExpierCode,createVerificationCode,Responses;
+    use verifyCode,ExpierCode,createVerificationCode;
 
     public function create(RegisterRequest $request) {
         return DB::transaction(function () use ($request){

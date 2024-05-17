@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -30,6 +31,20 @@ class Category extends BaseModel
     public function teachers(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'specializations');
+    }
+
+    public function parent()
+    {
+        return $this->belongsTo(Category::class, 'parent_id');
+    }
+
+    public function childrens() {
+        return $this->hasMany(Category::class,'parent_id');
+    }
+
+
+    public static function scopeParent(Builder $query) : void {
+        $query->where('parent_id',null);
     }
 
 }

@@ -20,6 +20,7 @@ return new class extends Migration {
                 ->nullOnDelete()
                 ->cascadeOnUpdate();
 
+            $table->integer('total_likes');
             $table->timestamps();
         });
     }

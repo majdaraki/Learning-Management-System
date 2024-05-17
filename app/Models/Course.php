@@ -21,6 +21,7 @@ class Course extends BaseModel
     protected $fillable = [
         'name',
         'category_id',
+        'total_likes',
     ];
 
 

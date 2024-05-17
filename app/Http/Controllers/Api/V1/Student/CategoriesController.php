@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1;
+namespace App\Http\Controllers\Api\V1\Student;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use PHPUnit\Framework\Constraint\IsEmpty;
 
 class CategoriesController extends Controller
 {
@@ -37,7 +38,10 @@ class CategoriesController extends Controller
      */
     public function show(Category $category)
     {
-        //
+        if (! empty($category->childrens[0])) {
+            return $this->indexOrShowResponse('categories',$category->childrens);
+        }
+        return $this->indexOrShowResponse('category',$category->load('courses')->unsetRelation('childrens'));
     }
 
     /**
