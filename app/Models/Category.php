@@ -42,8 +42,10 @@ class Category extends BaseModel
         return $this->hasMany(Category::class,'parent_id');
     }
 
-
-    public static function scopeParent(Builder $query) : void {
+    /**
+     * return only main categories.
+     */
+    public static function scopeParents(Builder $query) : void {
         $query->where('parent_id',null);
     }
 

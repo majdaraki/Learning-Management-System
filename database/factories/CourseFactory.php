@@ -19,6 +19,8 @@ class CourseFactory extends Factory
         return [
             'name' => fake()->name,
             'category_id' => fake()->numberBetween(3,7),
+            'teacher_id' => fake()->numberBetween(3,10),
+            'description' => fake()->paragraph(3),
             'total_likes' => fake()->numberBetween(1,50),
         ];
     }

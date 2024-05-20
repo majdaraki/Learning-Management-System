@@ -24,6 +24,34 @@ class Course extends BaseModel
         'total_likes',
     ];
 
+    protected $appends = [
+        'created_from',
+        'videos',
+        'teacher_name',
+        'category_name',
+    ];
+
+
+    public function getVideosAttribute()
+    {
+        return $this->videos()
+            ->get(['mediable_type', 'name'])
+            ->map(function ($media) {
+                $dir = explode('\\', $media->mediable_type)[2];
+                unset ($media->mediable_type);
+                return asset("storage/$dir") . '/' . $media->name;
+            });
+    }
+
+    public function getTeacherNameAttribute()
+    {
+        return $this->teacher()->pluck('first_name')->first();
+    }
+
+    public function getCategoryNameAttribute()
+    {
+        return $this->category()->pluck('name')->first();
+    }
 
     public function category(): BelongsTo
     {
@@ -35,16 +63,23 @@ class Course extends BaseModel
         return $this->hasMany(Test::class);
     }
 
-    public function medias(): MorphMany
+    public function videos(): MorphMany
     {
         return $this->morphMany(Media::class, 'mediable');
     }
 
-    public function Studernts(): BelongsToMany
+    public function Students(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'enrollments')
-            ->withPivotValue('is_favorite');
+            ->withPivot([
+                'is_favorite',
+                'is_active'
+            ]);
     }
 
+    public function teacher(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 
 }

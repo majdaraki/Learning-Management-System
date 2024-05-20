@@ -24,7 +24,8 @@ return new class extends Migration {
 
             $table->primary(['user_id', 'course_id']);
 
-            $table->boolean('is_favorite');
+            $table->boolean('is_favorite')->default(false);
+            $table->boolean('is_active')->default(false);
             $table->timestamps();
         });
     }

@@ -17,7 +17,7 @@ class HomePageController extends Controller
     {
         $recommended_courses = Course::orderBy('total_likes','desc')->take(10)->get();
         $latest_courses = Course::where('created_at','>=',Carbon::now()->subDays(2))->get();
-        $categories = Category::parent()->get();
+        $categories = Category::parents()->get();
 
         return response()->json([
             'recommended' => $recommended_courses,

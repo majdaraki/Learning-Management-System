@@ -5,9 +5,11 @@ namespace Database\Seeders;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\Category;
 use App\Models\Course;
+use App\Models\Media;
 use Illuminate\Database\Seeder;
 use App\Models\User;
 use Illuminate\Support\Carbon;
+use Spatie\Permission\Models\Role;
 
 class DatabaseSeeder extends Seeder
 {
@@ -22,6 +24,21 @@ class DatabaseSeeder extends Seeder
         //     'name' => 'Test User',
         //     'email' => 'test@example.com',
         // ]);
+        // Media::factory(20)->create();
+        Role::insert([
+            [
+                'guard_name' => 'web',
+                'name' => 'admin'
+            ],
+            [
+                'guard_name' => 'web',
+                'name' => 'teacher'
+            ],
+            [
+                'guard_name' => 'web',
+                'name' => 'student'
+            ],
+        ]);
         Category::insert([
             [
                 'name' => 'programming',
@@ -64,20 +81,24 @@ class DatabaseSeeder extends Seeder
                 'created_at' => Carbon::now(),
             ],
         ]);
-        Course::factory(20)->create();
         User::create([
             'first_name' => 'mario',
             'last_name' => 'andrawos',
             'email' => 'almowafratys09@gmail.com',
             'password' => bcrypt('password'),
-        ]);
+        ])->assignRole('student');
 
         User::create([
             'first_name' => 'mounir',
             'last_name' => 'maleh',
             'email' => 'mounirtoo.22@gmail.com',
             'password' => bcrypt('password'),
-        ]);
+        ])->assignRole('teacher');
+
+        User::factory(10)->create();
+
+        Course::factory(20)->create();
+
 
     }
 }
