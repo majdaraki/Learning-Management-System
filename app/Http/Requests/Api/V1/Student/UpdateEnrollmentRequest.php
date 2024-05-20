@@ -30,14 +30,4 @@ class UpdateEnrollmentRequest extends FormRequest
         ];
     }
 
-    public function withValidator(Validator $validator): void
-    {
-        $user_courses = $this->user()->coursesEnrollments;
-
-        $validator->after(function (Validator $validator) use ($user_courses) {
-            if (!$user_courses->contains($this->course)) {
-                $validator->errors()->add('course_id', 'You haven\'t enrolled in this course yet.');
-            }
-        });
-    }
 }

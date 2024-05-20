@@ -119,9 +119,10 @@ class User extends Authenticatable
         return $this->belongsToMany(Course::class, 'enrollments')
             ->withPivot([
                 'is_favorite',
-                'is_active'
+                'student_has_enrolled',
+                'progress'
             ])
-            ->where('is_active', true);
+            ->where('student_has_enrolled', true);
     }
 
     public function favoriteCourses(): BelongsToMany
@@ -129,7 +130,8 @@ class User extends Authenticatable
         return $this->belongsToMany(Course::class, 'enrollments')
             ->withPivot([
                 'is_favorite',
-                'is_active'
+                'student_has_enrolled',
+                'progress',
             ])
             ->where('is_favorite', true);
     }
@@ -139,7 +141,7 @@ class User extends Authenticatable
         return $this->hasMany(Enrollment::class);
     }
 
-    public function isEnrolledInCourse($course)
+    public function isEnrolledInCourse(Course $course) : bool
     {
         return $this->coursesEnrollments->contains($course);
     }

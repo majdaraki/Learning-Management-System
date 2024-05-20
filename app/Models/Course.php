@@ -73,7 +73,8 @@ class Course extends BaseModel
         return $this->belongsToMany(User::class, 'enrollments')
             ->withPivot([
                 'is_favorite',
-                'is_active'
+                'student_has_enrolled',
+                'progress',
             ]);
     }
 

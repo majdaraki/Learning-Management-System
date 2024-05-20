@@ -19,7 +19,8 @@ class Enrollment extends BaseModel
         'user_id',
         'course_id',
         'is_favorite',
-        'is_active',
+        'student_has_enrolled',
+        'progress',
     ];
 
 

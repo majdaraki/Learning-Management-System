@@ -11,6 +11,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('enrollments', function (Blueprint $table) {
+            $table->id();
 
             $table->foreignId('user_id')
                 ->constrained()
@@ -22,10 +23,10 @@ return new class extends Migration {
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
 
-            $table->primary(['user_id', 'course_id']);
 
             $table->boolean('is_favorite')->default(false);
-            $table->boolean('is_active')->default(false);
+            $table->boolean('student_has_enrolled')->default(false);
+            $table->float('progress')->default(0.0);
             $table->timestamps();
         });
     }

@@ -30,7 +30,7 @@ class verfication_code extends Notification
         return (new MailMessage)
             ->mailer('smtp')
             ->subject('Verification Code')
-            ->greeting('Hello ' . $this->user->first_name ) 
+            ->greeting('Hello ' . $this->user->first_name )
             ->line('Here is your verification code: ' . $this->verificationCode)
             ->line('Please use this code to complete your operation.');
     }

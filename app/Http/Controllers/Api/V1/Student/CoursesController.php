@@ -21,11 +21,11 @@ class CoursesController extends Controller
     public function __construct(
         protected CourseFilters $courseFilters
     ) {
-        $this->authorizeResource(Course::class,'course');
+        $this->authorizeResource(Course::class, 'course');
     }
 
     /**
-     * search about available courses.
+     * search about available courses in search box.
      */
     public function index()
     {
@@ -41,13 +41,16 @@ class CoursesController extends Controller
         return DB::transaction(function () use ($request) {
             $student = Auth::user();
 
-            $student->coursesEnrollments()->syncWithoutDetaching([
-                $request->course_id => [
-                    'is_active' => true,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ],
-            ]);
+            $enrollment = $student->enrollments()
+                ->where('course_id', $request->course_id)
+                ->firstOrCreate(values: [
+                    'course_id' => $request->course_id,
+                    'student_has_enrolled' => true
+                ]);
+
+            if (!is_null($enrollment)) {
+                $enrollment->update(['student_has_enrolled' => true]);
+            }
 
             return $this->sudResponse('You\'ve enrolled in this course successfully.');
         });
@@ -69,15 +72,14 @@ class CoursesController extends Controller
         return DB::transaction(function () use ($request, $course) {
             $student = Auth::user();
 
-            $enrollment = $student->enrollments()->where('course_id', $course->id)->firstOrFail();
+            $enrollment = $student->enrollments()
+                ->where('course_id', $course->id)
+                ->firstOrCreate(values: array_merge(['course_id' => $course->id], $request->only('is_favorite')));
 
-            $student->coursesEnrollments()->sync([
-                $course->id => [
-                    'is_favorite' => $request['is_favorite'],
-                    'is_active' => $enrollment['is_active'],
-                    'updated_at' => now(),
-                ],
-            ]);
+            if (!is_null($enrollment)) {
+                $enrollment->update($request->only('is_favorite'));
+            }
+
             return $this->sudResponse('Updated successfully.');
         });
 
@@ -92,10 +94,10 @@ class CoursesController extends Controller
             $student = Auth::user();
             $enrollment = $student->enrollments()->where('course_id', $course->id)->firstOrFail();
 
-            $student->coursesEnrollments()->sync([
+            $student->coursesEnrollments()->syncWithoutDetaching([
                 $course->id => [
                     'is_favorite' => $enrollment['is_favorite'],
-                    'is_active' => false,
+                    'student_has_enrolled' => false,
                     'updated_at' => now(),
                 ],
             ]);
