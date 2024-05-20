@@ -9,7 +9,7 @@ use App\Models\{
     Code
 };
 use App\Traits\{
-    verifyCode,
+    VerifyCodeForRegister,
     ExpierCode,
     createVerificationCode,
     Responses
@@ -23,7 +23,7 @@ use Illuminate\Support\Facades\DB;
 
 class RegisterController extends Controller
 {
-    use verifyCode,ExpierCode,createVerificationCode,Responses;
+    use VerifyCodeForRegister,ExpierCode,createVerificationCode,Responses;
 
     public function create(RegisterRequest $request) {
         return DB::transaction(function () use ($request){
