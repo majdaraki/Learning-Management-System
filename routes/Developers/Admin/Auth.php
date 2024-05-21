@@ -9,7 +9,7 @@ use App\Http\Controllers\Api\V1\Admin\Auth\{
 
 
 // Auth Routes
-Route::prefix('Admin/')->group(function () {
+Route::prefix('admins/')->group(function () {
 Route::post('/login', [LoginController::class, 'create']);
 Route::get('/logout', [LoginController::class, 'destroy'])->middleware('auth:sanctum');
 

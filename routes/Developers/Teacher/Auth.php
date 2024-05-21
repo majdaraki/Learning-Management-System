@@ -10,9 +10,9 @@ use App\Http\Controllers\Api\V1\Teacher\Auth\{
 
 // Auth Routes
 
-Route::prefix('Teacher/')->group(function () {
-Route::post('/login', [LoginController::class, 'create']);
-Route::get('/logout', [LoginController::class, 'destroy'])->middleware('auth:sanctum');
+Route::prefix('teachers/')->group(function () {
+Route::post('login', [LoginController::class, 'create']);
+Route::get('logout', [LoginController::class, 'destroy'])->middleware('auth:sanctum');
 
 
 // Handle Forget Password Routes
