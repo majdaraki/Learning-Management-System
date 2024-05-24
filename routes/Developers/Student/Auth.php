@@ -11,7 +11,7 @@ use App\Http\Controllers\Api\V1\Student\Auth\{
 
 // Auth Routes
 
-Route::prefix('students/auth')->group(function () {
+Route::prefix('students/auth/')->group(function () {
 Route::post('register', [RegisterController::class, 'create']);
 Route::post('login', [LoginController::class, 'create']);
 Route::get('logout', [LoginController::class, 'destroy'])->middleware('auth:sanctum');
