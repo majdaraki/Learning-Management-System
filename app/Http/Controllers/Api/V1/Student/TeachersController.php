@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1;
+namespace App\Http\Controllers\Api\V1\Student;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 
-class UsersController extends Controller
+class TeachersController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -35,9 +35,9 @@ class UsersController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(User $user)
+    public function show(User $teacher)
     {
-        //
+        return $this->indexOrShowResponse('teacher',$teacher->load('courses'));
     }
 
     /**

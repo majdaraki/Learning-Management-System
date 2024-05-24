@@ -12,8 +12,6 @@ use App\Traits\{
     verifyCode,
     ExpierCode,
     createVerificationCode,
-    Responses
-
 };
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\verfication_code;
@@ -23,7 +21,7 @@ use Illuminate\Support\Facades\DB;
 
 class RegisterController extends Controller
 {
-    use verifyCode,ExpierCode,createVerificationCode,Responses;
+    use verifyCode,ExpierCode,createVerificationCode;
 
     public function create(RegisterRequest $request) {
         return DB::transaction(function () use ($request){
@@ -31,6 +29,15 @@ class RegisterController extends Controller
             $teacher = User::create($request->all());
             Auth::login($teacher);
             $verificationCode = $this->getOrCreateVerificationCode($teacher->email, 'cheack-email');
+
+            if ($request->hasFile('image')) {
+                $request_image = $request->file('image');
+                $image_name = $this->setImagesName([$request_image])[0];
+
+                $teacher->image()->create(['name' => $image_name]);
+                $this->saveImages([$request_image], [$image_name], 'User');
+            }
+
             Notification::route('mail',$teacher->email)
                 ->notify(new verfication_code($teacher, $verificationCode));
 

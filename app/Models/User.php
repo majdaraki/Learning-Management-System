@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -35,6 +36,9 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'created_at',
+        'updated_at',
+        'email_verified_at'
     ];
 
     /**
@@ -47,24 +51,54 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    // teacher relations
-    // ________________________________
-    public function media(): MorphOne
+    protected $appends = [
+        'created_from',
+        'image',
+    ];
+
+    public function getImageAttribute()
+    {
+        $image = $this->image()->pluck('name')->first();
+        if (!$image) {
+            return '';
+        }
+        return asset('storage/' . $image);
+    }
+
+
+    public function getCreatedFromAttribute()
+    {
+        return $this->created_at->diffForHumans();
+    }
+
+
+    // Relations
+    public function image(): MorphOne
     {
         return $this->morphOne(Media::class, 'mediable');
     }
+
+
+    // teacher relations and methods
+    // ________________________________
 
     public function Categories(): BelongsToMany
     {
         return $this->belongsToMany(Category::class, 'specializations');
     }
+
+    public function courses(): HasMany
+    {
+        return $this->hasMany(Course::class, 'teacher_id');
+    }
+
     // ________________________________
 
 
 
 
 
-    //student relations
+    //student relations and methods
     // ________________________________
     public function questions(): BelongsToMany
     {
@@ -73,14 +107,62 @@ class User extends Authenticatable
 
     public function choices(): BelongsToMany
     {
-        return $this->belongsToMany(Choice::class, 'answers',relatedPivotKey:'chosen_choice_id');
+        return $this->belongsToMany(Choice::class, 'answers', relatedPivotKey: 'chosen_choice_id');
     }
 
+    public function answers(): HasMany
+    {
+        return $this->hasMany(Answer::class);
+    }
 
-    public function courses(): BelongsToMany
+    public function coursesEnrollments(): BelongsToMany
     {
         return $this->belongsToMany(Course::class, 'enrollments')
-            ->withPivotValue(['is_favorite']);
+            ->withPivot([
+                'is_favorite',
+                'student_has_enrolled',
+                'progress'
+            ])
+            ->where('student_has_enrolled', true);
+    }
+
+    public function favoriteCourses(): BelongsToMany
+    {
+        return $this->belongsToMany(Course::class, 'enrollments')
+            ->withPivot([
+                'is_favorite',
+                'student_has_enrolled',
+                'progress',
+            ])
+            ->where('is_favorite', true);
+    }
+
+    public function enrollments(): HasMany
+    {
+        return $this->hasMany(Enrollment::class);
+    }
+
+    public function results(): HasMany
+    {
+        return $this->hasMany(Result::class);
+    }
+
+    public function isEnrolledInCourse(Course $course): bool
+    {
+        return $this->coursesEnrollments->contains($course);
+    }
+
+    public function isInFavoritesList(Course $course): bool
+    {
+        return $this->favoriteCourses->contains($course);
+    }
+
+    public function getGrade($test): float|null
+    {
+        return $this->results()
+            ->where('test_id', $test->id)
+            ->pluck('grade')->first();
+
     }
 
     // ________________________________

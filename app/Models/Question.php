@@ -36,4 +36,7 @@ class Question extends BaseModel
         return $this->belongsToMany(User::class, 'answers');
     }
 
+    public function answers() : HasMany {
+        return $this->hasMany(Answer::class,'chosen_choice_id');
+    }
 }

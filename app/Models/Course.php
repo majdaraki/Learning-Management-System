@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Support\Facades\Auth;
 
 class Course extends BaseModel
 {
@@ -21,7 +22,55 @@ class Course extends BaseModel
     protected $fillable = [
         'name',
         'category_id',
+        'total_likes',
     ];
+
+    protected $appends = [
+        'created_from',
+        'videos',
+        // 'teacher_name',
+        // 'teacher_profile_image',
+        'category_name',
+    ];
+
+    // protected $with = [
+    //     'teacher',
+    // ];
+
+    public function getVideosAttribute()
+    {
+        return $this->videos()
+            ->get(['mediable_type', 'name'])
+            ->map(function ($media) {
+                $dir = explode('\\', $media->mediable_type)[2];
+                unset ($media->mediable_type);
+                return asset("storage/$dir") . '/' . $media->name;
+            });
+    }
+
+    public function getTeacherNameAttribute()
+    {
+        return $this->teacher()->pluck('first_name')->first();
+    }
+
+    public function getTeacherProfileImageAttribute()
+    {
+        return $this->teacher->getImageAttribute();
+    }
+
+    public function getCategoryNameAttribute()
+    {
+        return $this->category()->pluck('name')->first();
+    }
+
+    public function getIsFavoriteAttribute()
+    {
+        return Auth::user()->isInFavoritesList($this);
+    }
+    public function getProgressRatioAttribute()
+    {
+        return Auth::user();
+    }
 
 
     public function category(): BelongsTo
@@ -34,16 +83,24 @@ class Course extends BaseModel
         return $this->hasMany(Test::class);
     }
 
-    public function medias(): MorphMany
+    public function videos(): MorphMany
     {
         return $this->morphMany(Media::class, 'mediable');
     }
 
-    public function Studernts(): BelongsToMany
+    public function Students(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'enrollments')
-            ->withPivotValue('is_favorite');
+            ->withPivot([
+                'is_favorite',
+                'student_has_enrolled',
+                'progress',
+            ]);
     }
 
+    public function teacher(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 
 }

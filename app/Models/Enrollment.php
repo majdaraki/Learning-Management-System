@@ -16,9 +16,11 @@ class Enrollment extends BaseModel
      * @var array<int, string>
      */
     protected $fillable = [
-        'user_id',
+        'student_id',
         'course_id',
         'is_favorite',
+        'student_has_enrolled',
+        'progress',
     ];
 
 

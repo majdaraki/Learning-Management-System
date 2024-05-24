@@ -19,7 +19,8 @@ return new class extends Migration {
                 ->cascadeOnUpdate();
 
             $table->string('test_name');
-
+            $table->integer('after_video'); // test will be shown after video with this number
+            $table->integer('timer');
             $table->timestamps();
         });
     }

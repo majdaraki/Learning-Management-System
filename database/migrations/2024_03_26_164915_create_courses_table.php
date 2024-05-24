@@ -20,6 +20,14 @@ return new class extends Migration {
                 ->nullOnDelete()
                 ->cascadeOnUpdate();
 
+            $table->foreignId('teacher_id')
+                ->nullable()
+                ->constrained('users')
+                ->nullOnDelete()
+                ->cascadeOnUpdate();
+
+            $table->text('description');
+            $table->integer('total_likes');
             $table->timestamps();
         });
     }
