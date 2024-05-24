@@ -12,7 +12,7 @@ use App\Traits\{
 
 };
 use Carbon\Carbon;
-trait verifyCode
+trait VerifyCodeForRegister
 {
 
     protected function verifyCode($code)

@@ -30,7 +30,7 @@ public function forgetPassword(Request $request)
 {
     $validated = $request->validate([
         'email' => 'required',
-        'name' => 'required',
+        
     ]);
 
     $admin = User::where('email', $validated['email'])->firstOrFail();

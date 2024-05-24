@@ -10,7 +10,7 @@ use App\Models\{
     Code
 };
 use App\Traits\{
-    verifyCode,
+    VerifyCodeForRegister,
     ExpierCode,
     createVerificationCode
 };
@@ -23,7 +23,9 @@ use Illuminate\Support\Facades\DB;
 
 class RegisterController extends Controller
 {
-    use verifyCode,ExpierCode,createVerificationCode,Images;
+
+    use VerifyCodeForRegister,ExpierCode,createVerificationCode,Responses,Images;
+
 
     public function create(RegisterRequest $request) {
         return DB::transaction(function () use ($request){
@@ -38,7 +40,7 @@ class RegisterController extends Controller
                 $image_name = $this->setImagesName([$request_image])[0];
 
                 $student->image()->create(['name' => $image_name]);
-                $this->saveImages([$request_image], [$image_name], 'User');
+                $this->saveImages([$request_image], [$image_name], 'public/User');
             }
 
 
