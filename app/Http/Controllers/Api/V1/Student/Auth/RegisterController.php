@@ -40,7 +40,7 @@ class RegisterController extends Controller
                 $image_name = $this->setImagesName([$request_image])[0];
 
                 $student->image()->create(['name' => $image_name]);
-                $this->saveImages([$request_image], [$image_name], 'User');
+                $this->saveImages([$request_image], [$image_name], 'public/User');
             }
 
 
