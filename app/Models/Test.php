@@ -14,6 +14,8 @@ class Test extends BaseModel
     protected $fillable = [
         'test_name',
         'course_id',
+        'after_video',
+        'timer',
     ];
 
     public function course() : BelongsTo {

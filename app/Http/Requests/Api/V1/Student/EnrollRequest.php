@@ -27,7 +27,7 @@ class EnrollRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'course_id' => ['required','exists:courses,id'],
+            'course_id' => ['required', 'exists:courses,id'],
         ];
     }
 
@@ -37,11 +37,12 @@ class EnrollRequest extends FormRequest
 
         $validator->after(function (Validator $validator) use ($user_courses) {
             $data = $validator->validated();
-            $course = Course::find($data['course_id']);
-
-            // Check if the user hasn't enrolled in the course already
-            if ($user_courses->contains($course)) {
-                $validator->errors()->add('course_id', 'You\'ve already enrolled in this course.');
+            if (!empty ($data)) {
+                $course = Course::find($data['course_id']);
+                // Check if the user hasn't enrolled in the course already
+                if ($user_courses->contains($course)) {
+                    $validator->errors()->add('course_id', 'You\'ve already enrolled in this course.');
+                }
             }
         });
     }

@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Auth;
 
 class CourseResource extends JsonResource
 {
@@ -26,6 +27,9 @@ class CourseResource extends JsonResource
     private function customizeTests($tests)
     {
         foreach ($tests as &$test) {
+            if (! is_null($student_grade = Auth::user()->getGrade($test))) {
+                $test['student_grade'] = $student_grade;
+            }
             foreach ($test['questions'] as &$question) {
                     if ($this->getChosenChoice($question)) {
                         $question['chosen_choice_id'] = $this->getChosenChoice($question);
