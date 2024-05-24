@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Support\Facades\Auth;
 
 class Course extends BaseModel
 {
@@ -27,10 +28,14 @@ class Course extends BaseModel
     protected $appends = [
         'created_from',
         'videos',
-        'teacher_name',
+        // 'teacher_name',
+        // 'teacher_profile_image',
         'category_name',
     ];
 
+    // protected $with = [
+    //     'teacher',
+    // ];
 
     public function getVideosAttribute()
     {
@@ -48,10 +53,25 @@ class Course extends BaseModel
         return $this->teacher()->pluck('first_name')->first();
     }
 
+    public function getTeacherProfileImageAttribute()
+    {
+        return $this->teacher->getImageAttribute();
+    }
+
     public function getCategoryNameAttribute()
     {
         return $this->category()->pluck('name')->first();
     }
+
+    public function getIsFavoriteAttribute()
+    {
+        return Auth::user()->isInFavoritesList($this);
+    }
+    public function getProgressRatioAttribute()
+    {
+        return Auth::user();
+    }
+
 
     public function category(): BelongsTo
     {

@@ -57,46 +57,27 @@ class Handler extends ExceptionHandler
 
         if ($e instanceof AuthorizationException) {
             return response()->json([
-                'message' => 'Not allwoed',
+                'message' => 'This action is unauthorized.',
             ], 403);
         }
 
         if ($e instanceof UniqueConstraintViolationException) {
             return response()->json([
-                'message' => 'Already found',
+                'message' => 'This record is already exists.',
             ]);
         }
 
 
-
-
-
+        if ($e instanceof QueryException) {
+            return response()->json([
+                'message' => 'unknown query exception',
+            ]);
+        }
 
         if ($e instanceof RouteNotFoundException) {
             return response()->json([
-                'message' => 'Please login',
+                'message' => 'please login first.',
             ], 401);
-        }
-
-        if (
-            $e instanceof ProductNotExistForSupplierException ||
-            $e instanceof InActiveAccountException ||
-            $e instanceof IncorrectBillException
-        ) {
-            return response()->json([
-                'message' => $e->getMessage(),
-            ], $e->getCode());
-        }
-
-
-
-        if ($e instanceof ConnectionException) {
-            // Log the queue connection exception
-            Log::error('Queue ConnectionException: ' . $e->getMessage());
-            // Return an appropriate response (e.g., 503 Service Unavailable)
-            return response()->json([
-                'message' => 'An error oucured'
-            ], 503);
         }
 
         if ($e instanceof JobTimeoutException) {
@@ -104,15 +85,9 @@ class Handler extends ExceptionHandler
             Log::error('JobTimeoutException: ' . $e->getMessage());
             // Return an appropriate response (e.g., 504 Gateway Timeout)
             return response()->json([
-                'message' => 'An error oucured'
+                'message' => '.حدث خطأ ما، حاول مرة أخرى لاحقًا'
             ], 504);
         }
-
-        // // general case exception message.
-        // if ($e instanceof Throwable) {
-        //     return response()->json('something went wrong, try again later.',500);
-        // }
-
 
         return parent::render($request, $e);
     }

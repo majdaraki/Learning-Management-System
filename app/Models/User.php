@@ -36,6 +36,9 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'created_at',
+        'updated_at',
+        'email_verified_at'
     ];
 
     /**
@@ -55,13 +58,11 @@ class User extends Authenticatable
 
     public function getImageAttribute()
     {
-        return $this->image()
-            ->get(['mediable_type', 'name'])
-            ->map(function ($image) {
-                $dir = explode('\\', $image->mediable_type)[2];
-                unset ($image->mediable_type);
-                return asset("storage/$dir") . '/' . $image->name;
-            });
+        $image = $this->image()->pluck('name')->first();
+        if (!$image) {
+            return '';
+        }
+        return asset('storage/' . $image);
     }
 
 
@@ -141,9 +142,27 @@ class User extends Authenticatable
         return $this->hasMany(Enrollment::class);
     }
 
-    public function isEnrolledInCourse(Course $course) : bool
+    public function results(): HasMany
+    {
+        return $this->hasMany(Result::class);
+    }
+
+    public function isEnrolledInCourse(Course $course): bool
     {
         return $this->coursesEnrollments->contains($course);
+    }
+
+    public function isInFavoritesList(Course $course): bool
+    {
+        return $this->favoriteCourses->contains($course);
+    }
+
+    public function getGrade($test): float|null
+    {
+        return $this->results()
+            ->where('test_id', $test->id)
+            ->pluck('grade')->first();
+
     }
 
     // ________________________________
