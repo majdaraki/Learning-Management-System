@@ -2,13 +2,14 @@
 
 namespace App\Http\Requests\Api\V1\Student;
 
+use App\Models\Test;
 use App\Rules\ChoicesBelongToQuestion;
 use App\Rules\QuestionsBelongToTest;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreTestAnswersRequest extends FormRequest
 {
-    protected $stopOnFirstFailure = true;
+    // protected $stopOnFirstFailure = true;
 
     /**
      * Determine if the user is authorized to make this request.
@@ -25,11 +26,13 @@ class StoreTestAnswersRequest extends FormRequest
      */
     public function rules(): array
     {
+        $tests_count = Test::findOrFail($this->input('test_id'))->course->tests()->count();
         return [
             'test_id' => ['required', 'exists:tests,id'],
+            'test_number' => ['required', 'integer', 'min:1', "max:$tests_count"],
             'answers' => ['required', 'array'],
-            'answers.*.question_id' => ['required', 'exists:questions,id', 'distinct', new QuestionsBelongToTest($this->input('test_id'))],
-            'answers.*.chosen_choice_id' => ['required', 'distinct', new ChoicesBelongToQuestion($this->input('answers.*.question_id'))]
+            'answers.*.question_id' => ['required', 'distinct', new QuestionsBelongToTest($this->input('test_id'))],
+            'answers.*.chosen_choice_id' => ['required', 'distinct']
         ];
     }
 }

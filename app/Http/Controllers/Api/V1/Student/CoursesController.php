@@ -29,7 +29,7 @@ class CoursesController extends Controller
      */
     public function index()
     {
-        $courses = $this->courseFilters->applyFilters(Course::query())->get();
+        $courses = $this->courseFilters->applyFilters(Course::query())->with('teacher')->get();
         return $this->indexOrShowResponse('courses', $courses);
     }
 
@@ -112,11 +112,11 @@ class CoursesController extends Controller
      */
     public function getFavoritesList()
     {
-        $favorites = Auth::user()->favoriteCourses->map(function ($course) {
-            unset ($course->pivot);
-            return $course;
-        });
-        return $this->indexOrShowResponse('favorites', $favorites);
+        // $favorites = Auth::user()->favoriteCourses->map(function ($course) {
+        //     unset ($course->pivot);
+        //     return $course;
+        // });
+        return $this->indexOrShowResponse('favorites', Auth::user()->favoriteCourses()->with('teacher')->get());
     }
 
     /**
@@ -124,11 +124,11 @@ class CoursesController extends Controller
      */
     public function getEnrollmentsList()
     {
-        $courses = Auth::user()->coursesEnrollments->map(function ($course) {
-            unset ($course->pivot);
-            return $course;
-        });
-        return $this->indexOrShowResponse('courses', $courses);
+        // $courses = Auth::user()->coursesEnrollments->map(function ($course) {
+        //     unset ($course->pivot);
+        //     return $course;
+        // });
+        return $this->indexOrShowResponse('courses', Auth::user()->coursesEnrollments()->with('teacher')->get());
     }
 
 }
