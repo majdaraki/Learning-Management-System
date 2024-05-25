@@ -2,12 +2,11 @@
 
 namespace App\Http\Requests\Api\V1\Student;
 
-use App\Models\Test;
-use App\Rules\ChoicesBelongToQuestion;
-use App\Rules\QuestionsBelongToTest;
+use App\Models\Quiz;
+use App\Rules\QuestionsBelongToQuiz;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreTestAnswersRequest extends FormRequest
+class StoreQuizAnswersRequest extends FormRequest
 {
     // protected $stopOnFirstFailure = true;
 
@@ -26,12 +25,12 @@ class StoreTestAnswersRequest extends FormRequest
      */
     public function rules(): array
     {
-        $tests_count = Test::findOrFail($this->input('test_id'))->course->tests()->count();
+        $quizzes_count = Quiz::findOrFail($this->input('quiz_id'))->course->quizzes()->count();
         return [
-            'test_id' => ['required', 'exists:tests,id'],
-            'test_number' => ['required', 'integer', 'min:1', "max:$tests_count"],
+            'quiz_id' => ['required', 'exists:quizzes,id'],
+            'quiz_number' => ['required', 'integer', 'min:1', "max:$quizzes_count"],
             'answers' => ['required', 'array'],
-            'answers.*.question_id' => ['required', 'distinct', new QuestionsBelongToTest($this->input('test_id'))],
+            'answers.*.question_id' => ['required', 'distinct', new QuestionsBelongToQuiz($this->input('quiz_id'))],
             'answers.*.chosen_choice_id' => ['required', 'distinct']
         ];
     }

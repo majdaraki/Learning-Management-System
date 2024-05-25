@@ -24,7 +24,10 @@ use Illuminate\Support\Facades\DB;
 class RegisterController extends Controller
 {
 
-    use VerifyCodeForRegister,ExpierCode,createVerificationCode,Responses,Media;
+
+
+    use VerifyCodeForRegister,ExpierCode,createVerificationCode,Media;
+
 
 
     public function create(RegisterRequest $request) {

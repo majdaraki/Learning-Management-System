@@ -75,7 +75,7 @@ class User extends Authenticatable
     // Relations
     public function image(): MorphOne
     {
-        return $this->morphOne(Media::class, 'mediable');
+        return $this->morphOne(Image::class, 'imageable');
     }
 
 
@@ -157,10 +157,10 @@ class User extends Authenticatable
         return $this->favoriteCourses->contains($course);
     }
 
-    public function getGrade($test): float|null
+    public function getGrade($quiz): float|null
     {
         return $this->results()
-            ->where('test_id', $test->id)
+            ->where('quiz_id', $quiz->id)
             ->pluck('grade')->first();
 
     }

@@ -6,23 +6,23 @@ use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 use App\Models\Question;
 
-class QuestionsBelongToTest implements ValidationRule
+class QuestionsBelongToQuiz implements ValidationRule
 {
-    private $test_id;
+    private $quiz_id;
 
-    public function __construct($test_id)
+    public function __construct($quiz_id)
     {
-        $this->test_id = $test_id;
+        $this->quiz_id = $quiz_id;
     }
 
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        $validQuestionIds = Question::where('test_id', $this->test_id)
+        $validQuestionIds = Question::where('quiz_id', $this->quiz_id)
             ->pluck('id')
             ->toArray();
 
             if (!in_array($value, $validQuestionIds)) {
-                $fail("The question with ID $value does not belong to the specified test.");
+                $fail("The question with ID $value does not belong to the specified quiz.");
             }
     }
 }
