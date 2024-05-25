@@ -68,11 +68,7 @@ class Handler extends ExceptionHandler
         }
 
 
-        if ($e instanceof QueryException) {
-            return response()->json([
-                'message' => 'unknown query exception',
-            ]);
-        }
+
 
         if ($e instanceof RouteNotFoundException) {
             return response()->json([
