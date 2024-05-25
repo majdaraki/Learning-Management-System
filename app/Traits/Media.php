@@ -2,11 +2,11 @@
 
 namespace App\Traits;
 
-trait Images
+trait Media
 {
 
     // set images name
-    public function setImagesName(array $images): array
+    public function setMediaName(array $images): array
     {
         return array_map(function ($image) {
             return uniqid() . '_' . substr(str_shuffle(
@@ -16,7 +16,7 @@ trait Images
     }
 
     // save images
-    public function saveImages(array $images, array $names, string $path)
+    public function saveMedia(array $images, array $names, string $path)
     {
         for ($i = 0; $i < count($images); $i++) {
             $images[$i]->storeAs($path, $names[$i]);
@@ -24,7 +24,7 @@ trait Images
     }
 
     // delete images
-    public static function deleteImages(string $path, array $names)
+    public static function deleteMedia(string $path, array $names)
     {
         foreach ($names as $name) {
             unlink(public_path($path . '/' . $name));

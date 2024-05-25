@@ -58,9 +58,13 @@ class Course extends BaseModel
                 return [
                     'name' => asset("storage/$dir") . '/' . $video->name,
                     'description' => $video->description,
+                    'id'=>$video->id,
                 ];
             });
     }
+
+
+
 
     public function getTeacherNameAttribute()
     {

@@ -86,7 +86,7 @@ class DatabaseSeeder extends Seeder
             'last_name' => 'andrawos',
             'email' => 'almowafratys09@gmail.com',
             'password' => bcrypt('password'),
-        ])->assignRole('student');
+        ])->assignRole('teacher');
 
         User::create([
             'first_name' => 'mounir',
@@ -97,7 +97,7 @@ class DatabaseSeeder extends Seeder
 
         User::factory(10)->create();
 
-        Course::factory(20)->create();
+        //Course::factory(20)->create();
 
 
     }
