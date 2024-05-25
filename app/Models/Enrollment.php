@@ -29,9 +29,9 @@ class Enrollment extends BaseModel
         return $this->belongsTo(User::class);
     }
 
-    public function Test(): BelongsTo
+    public function quiz(): BelongsTo
     {
-        return $this->belongsTo(Test::class);
+        return $this->belongsTo(Quiz::class);
     }
 
 

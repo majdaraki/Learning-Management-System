@@ -11,7 +11,7 @@ class Result extends BaseModel
 
     protected $fillable = [
         'user_id',
-        'test_id',
+        'quiz_id',
         'grade',
     ];
 }

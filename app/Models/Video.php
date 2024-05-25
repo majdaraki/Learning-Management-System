@@ -4,9 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
 
-class Media extends BaseModel
+class Video extends BaseModel
 {
     use HasFactory;
 
@@ -17,25 +16,14 @@ class Media extends BaseModel
      */
     protected $fillable = [
         'name',
+        'description',
     ];
 
 
 
-    public function mediable()
+    public function videoable()
     {
         return $this->morphTo();
     }
-
-
-    // public function course(): MorphTo
-    // {
-    //     return $this->morphTo(Course::class);
-    // }
-
-    // public function teacher(): MorphTo
-    // {
-    //     return $this->morphTo(User::class);
-    // }
-
 
 }

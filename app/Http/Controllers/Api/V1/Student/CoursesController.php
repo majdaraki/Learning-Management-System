@@ -61,7 +61,7 @@ class CoursesController extends Controller
      */
     public function show(Course $course)
     {
-        return $this->indexOrShowResponse('course', new CourseResource($course->load(['tests.questions.choices', 'teacher'])));
+        return $this->indexOrShowResponse('course', new CourseResource($course->load(['quizzes.questions.choices', 'teacher'])));
     }
 
     /**

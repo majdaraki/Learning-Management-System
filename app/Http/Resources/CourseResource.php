@@ -18,25 +18,26 @@ class CourseResource extends JsonResource
             'description' => $this->description,
             'total_likes' => $this->total_likes,
             'created_from' => $this->created_from,
+            'image' => $this->image,
             'videos' => $this->videos,
             'teacher' => $this->teacher,
-            'tests' => $this->customizeTests($this->tests),
+            'quizzes' => $this->customizeQuizzes($this->quizzes),
         ];
     }
 
-    private function customizeTests($tests)
+    private function customizeQuizzes($quizzes)
     {
-        foreach ($tests as &$test) {
-            if (! is_null($student_grade = Auth::user()->getGrade($test))) {
-                $test['student_grade'] = $student_grade;
+        foreach ($quizzes as &$quiz) {
+            if (!is_null($student_grade = Auth::user()->getGrade($quiz))) {
+                $quiz['student_grade'] = $student_grade;
             }
-            foreach ($test['questions'] as &$question) {
-                    if ($this->getChosenChoice($question)) {
-                        $question['chosen_choice_id'] = $this->getChosenChoice($question);
-                    }
+            foreach ($quiz['questions'] as &$question) {
+                if ($this->getChosenChoice($question)) {
+                    $question['chosen_choice_id'] = $this->getChosenChoice($question);
+                }
             }
         }
-        return $tests;
+        return $quizzes;
     }
 
     private function getChosenChoice($question)
