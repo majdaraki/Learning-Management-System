@@ -6,12 +6,13 @@ trait Media
 {
 
     // set images name
-    public function setMediaName(array $images): array
+    public function setMediaName(array $images, string $folder_name): array
     {
-        return array_map(function ($image) {
-            return uniqid() . '_' . substr(str_shuffle(
-                'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_',
-            ), 0, 50) . '.' . $image->getClientOriginalExtension();
+        return array_map(function ($image) use ($folder_name) {
+            return $folder_name . '/' . uniqid() . '_' . substr(
+                str_shuffle(
+                    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_',
+                ), 0, 50) . '.' . $image->getClientOriginalExtension();
         }, $images);
     }
 

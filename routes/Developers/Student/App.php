@@ -3,7 +3,7 @@ use App\Http\Controllers\Api\V1\Student\{
     HomePageController,
     CategoriesController,
     CoursesController,
-    ProfileController,
+    ProfilesController,
     QuizzesController,
     TeachersController
 };
@@ -11,7 +11,9 @@ use App\Http\Controllers\Api\V1\Student\{
 Route::prefix('students/')
     ->middleware(['auth:sanctum', 'student'])
     ->group(function () {
-        Route::get('profile', ProfileController::class);
+        Route::get('profile', [ProfilesController::class , 'show']);
+        Route::put('profile', [ProfilesController::class , 'update']);
+        Route::delete('profile', [ProfilesController::class , 'destroy']);
 
         Route::get('home', HomePageController::class);
 
