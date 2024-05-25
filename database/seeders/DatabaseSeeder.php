@@ -4,8 +4,11 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\Category;
+use App\Models\Choice;
 use App\Models\Course;
 use App\Models\Media;
+use App\Models\Question;
+use App\Models\Quiz;
 use Illuminate\Database\Seeder;
 use App\Models\User;
 use Illuminate\Support\Carbon;
@@ -97,8 +100,87 @@ class DatabaseSeeder extends Seeder
 
         User::factory(10)->create();
 
-        //Course::factory(20)->create();
+        Course::factory(20)->create();
+        Quiz::insert([
+            [
+                'quiz_name' => 'first_quize',
+                'course_id' => 1,
+                'after_video' => 1,
+                'timer' => 15,
+                'created_at' => Carbon::now(),
+            ],
+            [
+                'quiz_name' => 'second_quiz',
+                'course_id' => 1,
+                'after_video' => 3,
+                'timer' => 30,
+                'created_at' => Carbon::now(),
+            ],
+        ]);
 
+        Question::insert([
+            [
+                'question_text' => 'question 1',
+                'quiz_id' => 1,
+                'created_at' => Carbon::now(),
+            ],
+            [
+                'question_text' => 'question 2',
+                'quiz_id' => 1,
+                'created_at' => Carbon::now(),
+            ],
+        ]);
+
+        Choice::insert([
+            [
+                'choice_text' => 'choice 1',
+                'question_id' => 1,
+                'is_correct' => 0,
+                'created_at' => Carbon::now(),
+            ],
+            [
+                'choice_text' => 'choice 2',
+                'question_id' => 1,
+                'is_correct' => 1,
+                'created_at' => Carbon::now(),
+            ],
+            [
+                'choice_text' => 'choice 3',
+                'question_id' => 1,
+                'is_correct' => 0,
+                'created_at' => Carbon::now(),
+            ],
+            [
+                'choice_text' => 'choice 4',
+                'question_id' => 1,
+                'is_correct' => 0,
+                'created_at' => Carbon::now(),
+            ],
+            [
+                'choice_text' => 'choice 5',
+                'question_id' => 2,
+                'is_correct' => 1,
+                'created_at' => Carbon::now(),
+            ],
+            [
+                'choice_text' => 'choice 6',
+                'question_id' => 2,
+                'is_correct' => 0,
+                'created_at' => Carbon::now(),
+            ],
+            [
+                'choice_text' => 'choice 7',
+                'question_id' => 2,
+                'is_correct' => 0,
+                'created_at' => Carbon::now(),
+            ],
+            [
+                'choice_text' => 'choice 8',
+                'question_id' => 2,
+                'is_correct' => 0,
+                'created_at' => Carbon::now(),
+            ],
+        ]);
 
     }
 }

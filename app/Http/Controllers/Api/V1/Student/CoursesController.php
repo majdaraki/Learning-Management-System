@@ -8,8 +8,6 @@ use App\Http\Requests\Api\V1\Student\EnrollRequest;
 use App\Http\Requests\Api\V1\Student\UpdateEnrollmentRequest;
 use App\Http\Resources\CourseResource;
 use App\Models\Course;
-use App\Policies\CoursePolicy;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -80,6 +78,12 @@ class CoursesController extends Controller
                 $enrollment->update($request->only('is_favorite'));
             }
 
+            if ($request->is_favorite) {
+                $course->total_likes ++ ;
+            }else {
+                $course->total_likes --;
+            }
+            $course->save();
             return $this->sudResponse('Updated successfully.');
         });
 
