@@ -67,8 +67,8 @@ class CoursesController extends Controller
 
             if($request->has('image')){
                 $request_file = $request->file('image');
-                $file_name = $this->setMediaName([$request_file])[0];
-                $this->saveMedia([$request_file], [$file_name], 'public/Course');
+                $file_name = $this->setMediaName([$request_file],'Course')[0];
+                $this->saveMedia([$request_file], [$file_name], 'public');
                 $course->image()->create(['name'=>$file_name]);
             }
             return $this->sudResponse('Done');

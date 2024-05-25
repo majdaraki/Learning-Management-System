@@ -15,7 +15,7 @@ class DetailsCourse extends JsonResource
             'total_likes' => $this->total_likes,
             'teacher' => $this->getTeacherNameAttribute(),
             'description' => $this->description,
-            'image' => $this->getImageAttribute(),
+            'image' => $this->image,
             'videos' =>$this-> getVideosAttribute(),
             'quizzes' => QuizResource::collection($this->whenLoaded('quizzes')),
             'students_count' => $this->students()->count(),
