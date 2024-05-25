@@ -27,7 +27,7 @@ return new class extends Migration {
                 ->cascadeOnUpdate();
 
             $table->text('description');
-            $table->integer('total_likes');
+            $table->integer('total_likes')->default(0);
             $table->timestamps();
         });
     }

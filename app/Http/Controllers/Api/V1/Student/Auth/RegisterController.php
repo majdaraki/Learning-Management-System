@@ -14,7 +14,7 @@ use App\Traits\{
     ExpierCode,
     createVerificationCode
 };
-use App\Traits\Images;
+use App\Traits\Media;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\verfication_code;
 use Illuminate\Http\Request;
@@ -24,7 +24,7 @@ use Illuminate\Support\Facades\DB;
 class RegisterController extends Controller
 {
 
-    use VerifyCodeForRegister,ExpierCode,createVerificationCode,Responses,Images;
+    use VerifyCodeForRegister,ExpierCode,createVerificationCode,Responses,Media;
 
 
     public function create(RegisterRequest $request) {
@@ -37,10 +37,10 @@ class RegisterController extends Controller
 
             if ($request->hasFile('image')) {
                 $request_image = $request->file('image');
-                $image_name = $this->setImagesName([$request_image])[0];
+                $image_name = $this->setMediaName([$request_image])[0];
 
                 $student->image()->create(['name' => $image_name]);
-                $this->saveImages([$request_image], [$image_name], 'public/User');
+                $this->saveMedia([$request_image], [$image_name], 'public/User');
             }
 
 
@@ -55,7 +55,7 @@ class RegisterController extends Controller
                 'message' => 'Code has been sent',
                 'student'=>new StudentResource($student),
                 'access_token' => $token
-            ],201);
+            ],200);
         });
     }
 

@@ -27,3 +27,4 @@ include __DIR__ . '/Developers/Student/App.php';
 
 
 include __DIR__ . '/Developers/Teacher/Auth.php';
+include __DIR__ . '/Developers/Teacher/App.php';

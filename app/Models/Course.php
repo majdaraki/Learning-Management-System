@@ -48,6 +48,9 @@ class Course extends BaseModel
             });
     }
 
+
+
+
     public function getTeacherNameAttribute()
     {
         return $this->teacher()->pluck('first_name')->first();
