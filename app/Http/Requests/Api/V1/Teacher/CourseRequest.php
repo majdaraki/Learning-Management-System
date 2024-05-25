@@ -29,8 +29,6 @@ class CourseRequest extends FormRequest
             'name' => 'required|string|max:255',
             'description' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
-            'video'=>['required','file'],
-            'video_description' => 'required|string',
             'image'=>['required','image'],
         ];
     }
