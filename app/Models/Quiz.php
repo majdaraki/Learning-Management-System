@@ -7,12 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Test extends BaseModel
+class Quiz extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'test_name',
+        'quiz_name',
         'course_id',
         'after_video',
         'timer',
@@ -25,4 +25,5 @@ class Test extends BaseModel
     public function questions() : HasMany {
         return $this->hasMany(Question::class);
     }
+
 }

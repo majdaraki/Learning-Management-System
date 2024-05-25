@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 class Category extends BaseModel
 {
@@ -21,6 +22,23 @@ class Category extends BaseModel
         'name',
         'parent_id',
     ];
+
+    protected $appends = ['created_from', 'image'];
+
+    public function getImageAttribute()
+    {
+        $image = $this->image()->pluck('name')->first();
+        if (!$image) {
+            return '';
+        }
+        return asset('storage/' . $image);
+    }
+
+
+    public function image(): MorphOne
+    {
+        return $this->morphOne(Image::class, 'imageable');
+    }
 
 
     public function courses(): HasMany
@@ -38,15 +56,17 @@ class Category extends BaseModel
         return $this->belongsTo(Category::class, 'parent_id');
     }
 
-    public function childrens() {
-        return $this->hasMany(Category::class,'parent_id');
+    public function childrens()
+    {
+        return $this->hasMany(Category::class, 'parent_id');
     }
 
     /**
      * return only main categories.
      */
-    public static function scopeParents(Builder $query) : void {
-        $query->where('parent_id',null);
+    public static function scopeParents(Builder $query): void
+    {
+        $query->where('parent_id', null);
     }
 
 }

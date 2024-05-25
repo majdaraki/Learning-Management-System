@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Support\Facades\Auth;
 
 class Course extends BaseModel
@@ -23,28 +24,41 @@ class Course extends BaseModel
         'name',
         'category_id',
         'total_likes',
+        'teacher_id',
+        'description',
     ];
-
     protected $appends = [
-        'created_from',
-        'videos',
-        // 'teacher_name',
-        // 'teacher_profile_image',
         'category_name',
+        'created_from',
+        'image',
+        'videos',
     ];
 
     // protected $with = [
     //     'teacher',
     // ];
 
+    public function getImageAttribute()
+    {
+        $image = $this->image()->pluck('name')->first();
+        if (!$image) {
+            return '';
+        }
+        return asset('storage/' . $image);
+    }
+
+
     public function getVideosAttribute()
     {
         return $this->videos()
-            ->get(['mediable_type', 'name'])
-            ->map(function ($media) {
-                $dir = explode('\\', $media->mediable_type)[2];
-                unset ($media->mediable_type);
-                return asset("storage/$dir") . '/' . $media->name;
+            ->get(['videoable_type', 'name', 'description'])
+            ->map(function ($video) {
+                $dir = explode('\\', $video->videoable_type)[2];
+                unset ($video->videoable_type);
+                return [
+                    'name' => asset("storage/$dir") . '/' . $video->name,
+                    'description' => $video->description,
+                ];
             });
     }
 
@@ -78,14 +92,19 @@ class Course extends BaseModel
         return $this->belongsTo(Category::class);
     }
 
-    public function tests(): HasMany
+    public function quizzes(): HasMany
     {
-        return $this->hasMany(Test::class);
+        return $this->hasMany(Quiz::class);
     }
 
     public function videos(): MorphMany
     {
-        return $this->morphMany(Media::class, 'mediable');
+        return $this->morphMany(Video::class, 'videoable');
+    }
+
+    public function image(): MorphOne
+    {
+        return $this->morphOne(Image::class, 'imageable');
     }
 
     public function Students(): BelongsToMany

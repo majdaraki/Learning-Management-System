@@ -19,12 +19,12 @@ class Question extends BaseModel
      */
     protected $fillable = [
         'question_text',
-        'test_id',
+        'quiz_id',
     ];
 
 
-    public function test() : BelongsTo {
-        return $this->belongsTo(Test::class);
+    public function quiz() : BelongsTo {
+        return $this->belongsTo(Quiz::class);
     }
 
     public function choices() : HasMany {

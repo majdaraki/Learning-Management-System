@@ -15,7 +15,9 @@ class ProfileController extends Controller
     public function __invoke()
     {
         $student = Auth::user();
-        $courses = $student->coursesEnrollments->take(5)->map(function ($course) {
+        $courses = $student->coursesEnrollments
+        ->map(function ($course) {
+            $course['is_favorite'] = $course['pivot']['is_favorite'];
             unset ($course->pivot);
             return $course;
         });

@@ -19,7 +19,7 @@ return new class extends Migration
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
 
-            $table->foreignId('test_id')
+            $table->foreignId('quiz_id')
                 ->constrained()
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
