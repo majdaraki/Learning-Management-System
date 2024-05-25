@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1\Student\Auth;
+namespace App\Http\Controllers\Api\V1\Teacher\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Auth\RegisterRequest;
@@ -9,9 +9,10 @@ use App\Models\{
     Code
 };
 use App\Traits\{
-    verifyCode,
+    VerifyCodeForRegister,
     ExpierCode,
     createVerificationCode,
+    Media
 };
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\verfication_code;
@@ -21,7 +22,9 @@ use Illuminate\Support\Facades\DB;
 
 class RegisterController extends Controller
 {
-    use verifyCode,ExpierCode,createVerificationCode;
+
+    use VerifyCodeForRegister,ExpierCode,createVerificationCode,Media;
+
 
     public function create(RegisterRequest $request) {
         return DB::transaction(function () use ($request){
@@ -32,10 +35,10 @@ class RegisterController extends Controller
 
             if ($request->hasFile('image')) {
                 $request_image = $request->file('image');
-                $image_name = $this->setImagesName([$request_image])[0];
+                $image_name = $this->setMediaName([$request_image])[0];
 
                 $teacher->image()->create(['name' => $image_name]);
-                $this->saveImages([$request_image], [$image_name], 'User');
+                $this->saveMedia([$request_image], [$image_name], 'public/User');
             }
 
             Notification::route('mail',$teacher->email)
@@ -45,8 +48,10 @@ class RegisterController extends Controller
 
             return response()->json([
                 'message' => 'Code has been sent',
+                'teacher'=>$teacher,
                 'access_token' => $token
-            ],201);
+
+            ],200);
         });
     }
 

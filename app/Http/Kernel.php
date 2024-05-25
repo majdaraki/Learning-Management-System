@@ -66,5 +66,6 @@ class Kernel extends HttpKernel
         'verified' => \App\Http\Middleware\Has_verify::class,
 
         'student' => \App\Http\Middleware\MustBeStudent::class,
+        'teacher'=>   \App\Http\Middleware\MustBeTeacher::class,
     ];
 }

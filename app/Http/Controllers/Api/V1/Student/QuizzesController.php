@@ -3,18 +3,17 @@
 namespace App\Http\Controllers\Api\V1\Student;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\V1\Student\StoreQuizAnswersRequest;
 use App\Http\Requests\Api\V1\Student\StoreTestAnswersRequest;
 use App\Models\Choice;
-use App\Models\Course;
-use App\Models\Test;
+use App\Models\Quiz;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
-
-class TestsController extends Controller
+class QuizzesController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -33,15 +32,15 @@ class TestsController extends Controller
     }
 
     /**
-     * Store student answers for a test.
+     * Store a newly created resource in storage.
      */
-    public function store(StoreTestAnswersRequest $request)
+    public function store(StoreQuizAnswersRequest $request)
     {
         return DB::transaction(function () use ($request) {
             $student = Auth::user();
-            $test = Test::findOrFail($request->test_id);
-            $course = $test->course;
-            $tests_count = $course->tests()->count();
+            $quiz = Quiz::findOrFail($request->quiz_id);
+            $course = $quiz->course;
+            $quizzes_count = $course->quizzes()->count();
             $questions_count = count($request->answers);
             $correct_answers_count = 0;
 
@@ -68,24 +67,25 @@ class TestsController extends Controller
 
             $student->results()
                 ->create([
-                    'test_id' => $request->test_id,
+                    'quiz_id' => $request->quiz_id,
                     'grade' => $grade,
                 ]);
 
-            $progress = $request->test_number / $tests_count * 100;
+            $progress = $request->quiz_number / $quizzes_count * 100;
             $student->enrollments()
                 ->where('course_id', $course->id)
                 ->update(['progress' => $progress]);
 
-            return $this->sudResponse('Congrats! You\'ve got : ' . $grade . '%  in this test.');
+            return $this->sudResponse('Congrats! You\'ve got : ' . $grade . '%  in this quiz.');
 
         });
+
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Test $test)
+    public function show(Quiz $quiz)
     {
         //
     }
@@ -93,7 +93,7 @@ class TestsController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Test $test)
+    public function edit(Quiz $quiz)
     {
         //
     }
@@ -101,7 +101,7 @@ class TestsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Test $test)
+    public function update(Request $request, Quiz $quiz)
     {
         //
     }
@@ -109,7 +109,7 @@ class TestsController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Test $test)
+    public function destroy(Quiz $quiz)
     {
         //
     }

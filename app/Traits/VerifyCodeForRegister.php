@@ -12,7 +12,7 @@ use App\Traits\{
 
 };
 use Carbon\Carbon;
-trait verifyCode
+trait VerifyCodeForRegister
 {
 
     protected function verifyCode($code)
@@ -32,7 +32,7 @@ trait verifyCode
         $user = User::where('email', $code->email)->first();
         $user->email_verified_at = Carbon::now();
         $user->save();
-        $code->delete();
+       // $code->delete();
         return $this->sudResponse('Code has been confirmed');
     }
 }

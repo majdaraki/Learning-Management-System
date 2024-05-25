@@ -12,7 +12,7 @@ use App\Models\{
 use App\Traits\{
     Responses,
     ExpierCode,
-    verifyCode,
+    VerifyCodeForForgetPassword,
 
 
 };
@@ -29,7 +29,7 @@ use App\Notifications\verfication_code;
 class ResetPassword extends Controller{
 
 
-    use ExpierCode,Responses,verifyCode;
+    use ExpierCode,Responses,VerifyCodeForForgetPassword;
 
         public function verify(Request $request){
             $request->validate([
@@ -38,7 +38,7 @@ class ResetPassword extends Controller{
             return $this->verifyCode($request['verification_code']);
 
         }
-    
+
 
     public function resetPassword(Request $request)
     {
