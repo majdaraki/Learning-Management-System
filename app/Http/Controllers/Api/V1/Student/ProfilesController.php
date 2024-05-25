@@ -77,7 +77,7 @@ class ProfilesController extends Controller
             if ($request->hasFile('image')) {
                 $request_image = $request->image;
                 $current_image = $student->image()->pluck('name')->first();
-                $image = $this->setMediaName([$request_image],'User')[0];
+                $image = $this->setMediaName([$request_image],'Students')[0];
                 $student->image()->update(['name' => $image]);
                 $this->saveMedia([$request_image], [$image], 'public');
                 $this->deleteMedia('storage', [$current_image]);
