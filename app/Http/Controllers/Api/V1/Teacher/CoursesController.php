@@ -107,12 +107,12 @@ class CoursesController extends Controller
                  return $this->sudResponse('unauthorized');
             }
 
-            $course->update($request->only(['name', 'description']));
+            $course->update($request->only(['name', 'description','category_id']));
             if ($request->hasFile('image')) {
                  $existingImage = $course->image()->first();
 
             if ($existingImage) {
-                $this->deleteMedia('Course', [$existingImage->name]);
+                $this->deleteMedia('storage', [$existingImage->name]);
                 $existingImage->delete();
             }
             $request_file = $request->file('image');

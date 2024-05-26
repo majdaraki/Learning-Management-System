@@ -43,6 +43,7 @@ class RegisterController extends Controller
 
             Notification::route('mail',$teacher->email)
                 ->notify(new verfication_code($teacher, $verificationCode));
+                $teacher->assignRole('teacher');
 
             $token = $teacher->createToken('access_token')->plainTextToken;
 

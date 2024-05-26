@@ -29,7 +29,6 @@ class UpdateCourseRequest extends FormRequest
             'name' => 'nullable|string|max:255',
             'description' => 'nullable|string|max:255',
             'category_id' => 'nullable|exists:categories,id',
-            'video'=>['nullable','file'],
             'image'=>['nullable','image'],
         ];
     }
