@@ -16,7 +16,7 @@ Route::post('login', [LoginController::class, 'create']);
 Route::get('logout', [LoginController::class, 'destroy'])->middleware('auth:sanctum');
 
 Route::post('register', [RegisterController::class, 'create']);
-Route::post('verify-email',[RegisterController::class,'verify']);
+Route::post('check-code',[RegisterController::class,'verify']);
 // Handle Forget Password Routes
 
 Route::post('forget-password',[ForgetPassword::class,'forgetPassword']);

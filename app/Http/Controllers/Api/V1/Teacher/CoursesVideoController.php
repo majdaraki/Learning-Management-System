@@ -95,7 +95,7 @@ class CoursesVideoController extends Controller
 
         if ($request->hasFile('video')) {
             $request_file = $request->file('video');
-            $file_name = $this->setMediaName([$request_file])[0];
+            $file_name = $this->setMediaName([$request_file],'Course')[0];
            $course->videos()->create([
             'name' => $file_name,
             'description' => $request->video_description
