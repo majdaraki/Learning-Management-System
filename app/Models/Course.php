@@ -51,14 +51,14 @@ class Course extends BaseModel
     public function getVideosAttribute()
     {
         return $this->videos()
-            ->get(['videoable_type', 'name', 'description'])
+            ->get(['videoable_type', 'name', 'description','id'])
             ->map(function ($video) {
                 $dir = explode('\\', $video->videoable_type)[2];
                 unset ($video->videoable_type);
                 return [
                     'name' => asset("storage/$dir") . '/' . $video->name,
                     'description' => $video->description,
-                    'id'=>$video->id,
+                    'id'=>$video->id
                 ];
             });
     }

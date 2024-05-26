@@ -35,10 +35,10 @@ class RegisterController extends Controller
 
             if ($request->hasFile('image')) {
                 $request_image = $request->file('image');
-                $image_name = $this->setMediaName([$request_image])[0];
+                $image_name = $this->setMediaName([$request_image],'Teachers')[0];
 
                 $teacher->image()->create(['name' => $image_name]);
-                $this->saveMedia([$request_image], [$image_name], 'public/User');
+                $this->saveMedia([$request_image], [$image_name], 'public');
             }
 
             Notification::route('mail',$teacher->email)
