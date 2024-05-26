@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api\V1\Student;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Illuminate\Http\Request;
-use PHPUnit\Framework\Constraint\IsEmpty;
 
 class CategoriesController extends Controller
 {
