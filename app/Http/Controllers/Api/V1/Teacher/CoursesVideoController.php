@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Api\V1\Teacher;
+
 use App\Http\Resources\Teacher\CourseResource;
 use App\Http\Requests\Api\V1\Teacher\{
     UpdateCourseRequest,
@@ -76,51 +77,51 @@ class CoursesVideoController extends Controller
      * Update the specified resource in storage.
      */
 
-     public function update(Request $request, $course_id)
-        {
-      return DB::transaction(function () use ($request, $course_id) {
-        $teacher = Auth::user();
-        $course = Course::findOrFail($course_id);
-        if ($course->teacher_id != $teacher->id) {
-          return $this->sudResponse('unauthorized');
-       }
+    public function update(Request $request, $course_id)
+    {
+        return DB::transaction(function () use ($request, $course_id) {
+            $teacher = Auth::user();
+            $course = Course::findOrFail($course_id);
+            if ($course->teacher_id != $teacher->id) {
+                return $this->sudResponse('unauthorized');
+            }
 
-        if ($request->filled('delete_video_id')) {
-        $video = $course->videos()->find($request->input('delete_video_id'));
-        if ($video) {
-        $this->deleteMedia('Course', [$video->name]);
-        $video->delete();
-        }
-       }
+            if ($request->filled('delete_video_id')) {
+                $video = $course->videos()->find($request->input('delete_video_id'));
+                if ($video) {
+                    $this->deleteMedia('Course', [$video->name]);
+                    $video->delete();
+                }
+            }
 
-        if ($request->hasFile('video')) {
-            $request_file = $request->file('video');
-            $file_name = $this->setMediaName([$request_file],'Course')[0];
-           $course->videos()->create([
-            'name' => $file_name,
-            'description' => $request->video_description
-         ]);
-        $this->saveMedia([$request_file], [$file_name], 'public/Course');
-        }
-
-
-        if ($request->filled('video_id') && $request->filled('video_description')) {
-        $video = $course->videos()->find($request->input('video_id'));
-        if ($video) {
-        $video->update(['description' => $request->input('video_description')]);
-        }
-     }
-
-     return $this->sudResponse('Videos updated successfully.');
- });
-}
+            if ($request->hasFile('video')) {
+                $request_file = $request->file('video');
+                $file_name = $this->setMediaName([$request_file], 'Course')[0];
+                $course->videos()->create([
+                    'name' => $file_name,
+                    'description' => $request->video_description
+                ]);
+                $this->saveMedia([$request_file], [$file_name], 'public/Course');
+            }
 
 
-        /**
-         * Remove the specified resource from storage.
-         */
-        public function destroy(Course $course)
-        {
-            //
-        }
+            if ($request->filled('video_id') && $request->filled('video_description')) {
+                $video = $course->videos()->find($request->input('video_id'));
+                if ($video) {
+                    $video->update(['description' => $request->input('video_description')]);
+                }
+            }
+
+            return $this->sudResponse('Videos updated successfully.');
+        });
+    }
+
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Course $course)
+    {
+        //
+    }
 }
