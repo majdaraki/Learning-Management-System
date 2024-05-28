@@ -1,7 +1,7 @@
 <?php
 use App\Http\Controllers\Api\V1\Teacher\{
     CoursesController,
-    CoursesVideoController, // this is the old controller
+    ProfilesController,
     CourseVideosController,
     CourseQuizzesController,
     QuizQuestionsController
@@ -10,8 +10,12 @@ use App\Http\Controllers\Api\V1\Teacher\{
 Route::prefix('teachers/')
     ->middleware(['auth:sanctum', 'teacher'])
     ->group(function () {
+        Route::get('profile', [ProfilesController::class , 'show']);
+        Route::put('profile', [ProfilesController::class , 'update']);
+        Route::delete('profile', [ProfilesController::class , 'destroy']);
+
         Route::apiResource('courses', CoursesController::class);
-        Route::apiResource('courses.videos', CourseVideosController::class)->except('index', 'show');
+        Route::apiResource('courses.videos', CourseVideosController::class);
         Route::apiResource('courses.quizzess', CourseQuizzesController::class);
-        Route::apiResource('quizzes.questions', QuizQuestionsController::class)->except('index', 'show');
+        Route::apiResource('quizzes.questions', QuizQuestionsController::class);
     });

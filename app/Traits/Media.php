@@ -30,7 +30,7 @@ trait Media
         foreach ($names as $name) {
             $filePath = storage_path('app/public/' . $path . '/' . $name);
             if (file_exists($filePath)) {
-       
+
                 unlink($filePath);
             }
         }
