@@ -27,7 +27,11 @@ class RegisterRequest extends FormRequest
             'email' => ['required', 'email', 'unique:users,email'],
             'password' => ['required', 'confirmed'],
             'image' => ['image'],
+            'specialization_ids' => 'sometimes|array',
+            'specialization_ids.*' => 'exists:categories,id',
         ];
+
+
     }
 
     public function messages(): array

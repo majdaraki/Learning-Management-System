@@ -22,4 +22,9 @@ Route::post('check-code',[RegisterController::class,'verify']);
 Route::post('forget-password',[ForgetPassword::class,'forgetPassword']);
 Route::post('verify',[ResetPassword::class,'verify']);
 Route::post('reset-password',[ResetPassword::class,'resetPassword']);
+
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::post('resend-code',[RegisterController::class,'resend']);
+
+});
 });

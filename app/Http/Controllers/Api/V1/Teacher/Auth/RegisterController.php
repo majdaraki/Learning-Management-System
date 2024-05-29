@@ -31,6 +31,8 @@ class RegisterController extends Controller
         return DB::transaction(function () use ($request) {
 
             $teacher = User::create($request->all());
+            $specialization=$request['specialization_ids'];
+            $teacher->categories()->sync($specialization);
             Auth::login($teacher);
             $verificationCode = $this->getOrCreateVerificationCode($teacher->email, 'cheack-email');
 
