@@ -1,17 +1,15 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1\Student;
+namespace App\Http\Controllers\Api\V1\Teacher;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Student\UpdateProfileRequest;
-use App\Http\Resources\StudentResource;
+use App\Http\Resources\TeacherResource;
 use App\Models\User;
 use App\Traits\Media;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\{
-    Auth,
-    DB
-};
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ProfilesController extends Controller
 {
@@ -45,17 +43,16 @@ class ProfilesController extends Controller
      */
     public function show()
     {
-        $student = Auth::user();
-        $courses = $student->coursesEnrollments
-            ->map(function ($course) {
-                $course['is_favorite'] = $course['pivot']['is_favorite'];
-                unset ($course->pivot);
-                return $course;
-            });
-        return response()->json([
-            'student' => new StudentResource($student),
-            'courses' => $courses
-        ]);
+        $teacher = Auth::user()->withCount('courses')->where('id',Auth::id())->first();
+        // $courses = $teacher->courses->each(function ($course) {
+        //     return $course->withCount('students');
+        // });
+        // [
+        //     'courses' => function ($course) {
+        //         return $course->withCount('students');
+        //     }
+        // ]
+        return $this->indexOrShowResponse('teacher', $teacher);
     }
 
     /**
@@ -72,24 +69,25 @@ class ProfilesController extends Controller
     public function update(UpdateProfileRequest $request)
     {
         return DB::transaction(function () use ($request) {
-            $student = Auth::user();
+            $teacher = Auth::user();
 
-            $student->update($request->validated());
+            $teacher->update($request->validated());
 
             if ($request->hasFile('image')) {
                 $request_image = $request->image;
-                $current_image = $student->image()->pluck('name')->first();
-                $image = $this->setMediaName([$request_image],'Students')[0];
-                $student->image()->update(['name' => $image]);
+                $current_image = $teacher->image()->pluck('name')->first();
+                $image = $this->setMediaName([$request_image], 'Teachers')[0];
+                $teacher->image()->update(['name' => $image]);
                 $this->saveMedia([$request_image], [$image], 'public');
                 $this->deleteMedia('storage', [$current_image]);
             }
 
             return response()->json([
                 'message' => 'Profile updated successfully.',
-                'student' => new StudentResource($student),
+                'teacher' => new TeacherResource($teacher),
             ]);
         });
+
     }
 
     /**
@@ -98,12 +96,13 @@ class ProfilesController extends Controller
     public function destroy()
     {
         return DB::transaction(function () {
-            $student = Auth::user();
-            $current_image = $student->image()->pluck('name')->first();
-            $student->image()->delete();
-            $student->delete();
+            $teacher = Auth::user();
+            $current_image = $teacher->image()->pluck('name')->first();
+            $teacher->image()->delete();
+            $teacher->delete();
             $this->deleteMedia('storage', [$current_image]);
             return $this->sudResponse('Profile Deleted Successfully');
         });
+
     }
 }

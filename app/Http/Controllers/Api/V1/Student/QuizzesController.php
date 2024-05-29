@@ -4,13 +4,16 @@ namespace App\Http\Controllers\Api\V1\Student;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Student\StoreQuizAnswersRequest;
-use App\Http\Requests\Api\V1\Student\StoreTestAnswersRequest;
-use App\Models\Choice;
-use App\Models\Quiz;
+use App\Models\{
+    Choice,
+    Quiz
+};
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\{
+    Auth,
+    DB,
+    Validator
+};
 use Illuminate\Validation\ValidationException;
 
 class QuizzesController extends Controller
@@ -56,7 +59,6 @@ class QuizzesController extends Controller
                         throw new ValidationException($validator);
                     }
                 } catch (ValidationException $e) {
-                    // Handle the exception or re-throw it if needed
                     throw $e;
                 }
 

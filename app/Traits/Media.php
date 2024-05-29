@@ -28,7 +28,10 @@ trait Media
     public static function deleteMedia(string $path, array $names)
     {
         foreach ($names as $name) {
-            unlink(public_path($path . '/' . $name));
+            $filePath = storage_path('app/public/' . $name);
+            if (file_exists($filePath)) {
+                unlink($filePath);
+            }
         }
     }
 

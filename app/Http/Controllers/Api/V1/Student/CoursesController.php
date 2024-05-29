@@ -4,12 +4,16 @@ namespace App\Http\Controllers\Api\V1\Student;
 
 use App\Filters\CourseFilters;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\V1\Student\EnrollRequest;
-use App\Http\Requests\Api\V1\Student\UpdateEnrollmentRequest;
+use App\Http\Requests\Api\V1\Student\{
+    EnrollRequest,
+    UpdateEnrollmentRequest
+};
 use App\Http\Resources\CourseResource;
 use App\Models\Course;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\{
+    Auth,
+    DB
+};
 
 class CoursesController extends Controller
 {

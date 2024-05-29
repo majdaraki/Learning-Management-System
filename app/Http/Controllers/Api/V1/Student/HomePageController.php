@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Api\V1\Student;
 
 use App\Http\Controllers\Controller;
-use App\Models\Category;
-use App\Models\Course;
+use App\Models\{
+    Category,
+    Course
+};
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 

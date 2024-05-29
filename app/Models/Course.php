@@ -51,14 +51,14 @@ class Course extends BaseModel
     public function getVideosAttribute()
     {
         return $this->videos()
-            ->get(['videoable_type', 'name', 'description'])
+            ->get(['videoable_type', 'name', 'description', 'id'])
             ->map(function ($video) {
                 $dir = explode('\\', $video->videoable_type)[2];
                 unset ($video->videoable_type);
                 return [
-                    'name' => asset("storage/$dir") . '/' . $video->name,
+                    'id' => $video->id,
+                    'name' => asset('storage/' . $video->name),
                     'description' => $video->description,
-                    'id'=>$video->id,
                 ];
             });
     }
@@ -113,12 +113,13 @@ class Course extends BaseModel
 
     public function Students(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'enrollments')
+        return $this->belongsToMany(Course::class, 'enrollments')
             ->withPivot([
                 'is_favorite',
                 'student_has_enrolled',
-                'progress',
-            ]);
+                'progress'
+            ])
+            ->where('student_has_enrolled', true);
     }
 
     public function teacher(): BelongsTo

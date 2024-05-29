@@ -1,17 +1,18 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1\Student;
+namespace App\Http\Controllers\Api\V1\Teacher;
 
 use App\Http\Controllers\Controller;
-use App\Models\Category;
+use App\Models\Question;
+use App\Models\Quiz;
 use Illuminate\Http\Request;
 
-class CategoriesController extends Controller
+class QuizQuestionsController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Quiz $quiz)
     {
         //
     }
@@ -27,7 +28,7 @@ class CategoriesController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, Quiz $quiz)
     {
         //
     }
@@ -35,18 +36,15 @@ class CategoriesController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Category $category)
+    public function show(Quiz $quiz, Question $question)
     {
-        if (! empty($category->childrens[0])) {
-            return $this->indexOrShowResponse('categories',$category->childrens);
-        }
-        return $this->indexOrShowResponse('category',$category->load('courses')->unsetRelation('childrens'));
+        //
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Category $category)
+    public function edit(Quiz $quiz)
     {
         //
     }
@@ -54,7 +52,7 @@ class CategoriesController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Category $category)
+    public function update(Request $request, Quiz $quiz, Question $question)
     {
         //
     }
@@ -62,7 +60,7 @@ class CategoriesController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Category $category)
+    public function destroy(Quiz $quiz, Question $question)
     {
         //
     }

@@ -1,87 +1,73 @@
 <?php
 
 namespace App\Http\Controllers\Api\V1\Teacher;
-use App\Http\Resources\Teacher\CourseResource;
+
+use App\Http\Resources\Teacher\{
+    CourseResource,
+    DetailsCourse
+
+};
 use App\Http\Requests\Api\V1\Teacher\{
     UpdateCourseRequest,
-    CourseRequest
+    StoreCourseRequest
 };
 use App\Http\Controllers\Controller;
 use App\Models\{
-    Course,
-    User,
-    Category
-
+    Course
 };
 use App\Traits\Media;
-use App\Traits\Responses;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{
     Auth,
     DB
 };
+use App\Filters\CourseFilters;
+use Illuminate\Auth\Access\AuthorizationException;
 
 class CoursesController extends Controller
 {
-    use Media,Responses;
+    use Media;
+
+    /**
+     * Create the controller instance.
+     */
+    public function __construct(
+        protected CourseFilters $courseFilters
+    ) {
+    }
+
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(CourseFilters $courseFilters)
     {
         $teacher = Auth::user();
-        $coursesResource = CourseResource::collection($teacher->courses()->withCount('students')->get());
-        return $this->indexOrShowResponse('body', $coursesResource);
-    }
+        $courses = $courseFilters->applyFilters(
+            $teacher->courses()->withCount('students')->getQuery()
+        )->get();
 
-
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        return $this->indexOrShowResponse('courses', $courses);
     }
 
     /**
      * Store a newly created resource in storage.
-     *
-     * اسم الكورس
-     * وصف الكورس
-     * فيديو واحد
      */
 
-    public function store(CourseRequest $request)
+    public function store(StoreCourseRequest $request)
     {
+        return DB::transaction(function () use ($request) {
+            $teacher = Auth::user();
 
-        return DB::transaction(function () use ($request){
+            $course = $teacher->courses()->create($request->all());
 
-            $teacher=Auth::user();
-            //return $teacher;
-            $data=$request->all();
-            $data['teacher_id']=$teacher->id;
-            $course=Course::create($data);
-
-            if($request->has('video')){
-                $request_file = $request->file('video');
-                $file_name = $this->setMediaName([$request_file])[0];
-
-                $course->videos()->create(['name' => $file_name]);
-                $this->saveMedia([$request_file], [$file_name], 'public/Course');
+            if ($request->hasFile('image')) {
+                $request_image = $request->image;
+                $image = $this->setMediaName([$request_image], 'Courses')[0];
+                $course->image()->create(['name' => $image]);
+                $this->saveMedia([$request_image], [$image], 'public');
             }
-
-            if($request->has('image')){
-                $request_file = $request->file('image');
-                $file_name = $this->setMediaName([$request_file])[0];
-
-                $course->videos()->create(['name' => $file_name]);
-                $this->saveMedia([$request_file], [$file_name], 'public/Course');
-            }
-            return $this->sudResponse('Done');
-
+            return $this->sudResponse('Course created successfully', 201);
         });
-
     }
 
     /**
@@ -89,72 +75,53 @@ class CoursesController extends Controller
      */
     public function show(Course $course)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Course $course)
-    {
-        //
+        $course->load('quizzes.questions.choices');
+        return $this->indexOrShowResponse('course',new DetailsCourse($course));
     }
 
     /**
      * Update the specified resource in storage.
      */
 
-    public function update(UpdateCourseRequest $request,  $course_id)
+    public function update(UpdateCourseRequest $request, Course $course)
     {
-        $teacher=Auth::user();
-        $course=Course::find($course_id);
-        if ($course->teacher_id != Auth::id()) {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
-
         return DB::transaction(function () use ($request, $course) {
-
-         $course->update($request->all());
+            $teacher = Auth::user();
+            $course->update($request->validated());
 
             if ($request->hasFile('image')) {
-
-                $request_image = $request->file('image');
-                $image_name = $this->setMediaName([$request_image])[0];
-                Storage::delete('public/Course' . $existingVideo->name);
-                $course->image()->create(['name' => $image_name]);
-                $this->saveMedia([$request_image], [$image_name], 'public/Course');
+                $request_image = $request->image;
+                $current_image = $course->image()->pluck('name')->first();
+                $image = $this->setMediaName([$request_image], 'Courses')[0];
+                $course->image()->update(['name' => $image]);
+                $this->saveMedia([$request_image], [$image], 'public');
+                $this->deleteMedia('storage', [$current_image]);
             }
 
-
-            if ($request->hasFile('video')) {
-                $request_video = $request->file('video');
-                $video_name = $this->setMediaName([$request_video])[0];
-                $existingVideo = $course->videos()->first();
-                if ($existingVideo) {
-
-                    $this->deleteMedia('public/Course/' , [$existingVideo->name]);
-
-                    $existingVideo->name = $video_name;
-                    $existingVideo->save();
-                } else {
-
-                    $course->videos()->create(['name' => $video_name]);
-                }
-
-
-                $request_video->storeAs('public/Course', $video_name);
-            }
-
-            return response()->json(['message' => 'Course updated successfully']);
+            return $this->sudResponse('Course updated successfully.');
         });
     }
-
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(Course $course)
     {
-        //
+        $teacher = Auth::user();
+        throw_if($course->teacher_id != $teacher->id, new AuthorizationException());
+
+        return DB::transaction(function () use ($teacher, $course) {
+            $current_image = $course->image()->pluck('name')->first();
+            $current_videos = $course->videos()->pluck('name')->toArray();
+            $course->image()->delete();
+            $course->videos()->delete();
+            $course->delete();
+            $this->deleteMedia(
+                'storage',
+                array_merge([$current_image], $current_videos)
+            );
+            return $this->sudResponse('Course Deleted Successfully');
+        });
     }
+
 }

@@ -23,11 +23,12 @@ use Illuminate\Support\Facades\DB;
 class RegisterController extends Controller
 {
 
-    use VerifyCodeForRegister,ExpierCode,createVerificationCode,Media;
+    use VerifyCodeForRegister, ExpierCode, createVerificationCode, Media;
 
 
-    public function create(RegisterRequest $request) {
-        return DB::transaction(function () use ($request){
+    public function create(RegisterRequest $request)
+    {
+        return DB::transaction(function () use ($request) {
 
             $teacher = User::create($request->all());
             Auth::login($teacher);
@@ -35,30 +36,33 @@ class RegisterController extends Controller
 
             if ($request->hasFile('image')) {
                 $request_image = $request->file('image');
-                $image_name = $this->setMediaName([$request_image])[0];
+                $image_name = $this->setMediaName([$request_image], 'Teachers')[0];
 
                 $teacher->image()->create(['name' => $image_name]);
-                $this->saveMedia([$request_image], [$image_name], 'public/User');
+                $this->saveMedia([$request_image], [$image_name], 'public');
             }
 
-            Notification::route('mail',$teacher->email)
+            Notification::route('mail', $teacher->email)
                 ->notify(new verfication_code($teacher, $verificationCode));
+
+            $teacher->assignRole('teacher');
 
             $token = $teacher->createToken('access_token')->plainTextToken;
 
             return response()->json([
                 'message' => 'Code has been sent',
-                'teacher'=>$teacher,
+                'teacher' => $teacher,
                 'access_token' => $token
 
-            ],200);
+            ], 200);
         });
     }
 
 
-    public function resend(Request $request) {
+    public function resend(Request $request)
+    {
         return DB::transaction(function () use ($request) {
-            $teacher=Auth::user();
+            $teacher = Auth::user();
             $verificationCode = $this->getOrCreateVerificationCode($teacher->email, 'check-email');
             Notification::route('mail', $teacher->email)
                 ->notify(new verfication_code($teacher, $verificationCode));
@@ -67,9 +71,10 @@ class RegisterController extends Controller
     }
 
 
-    public function verify(Request $request){
+    public function verify(Request $request)
+    {
         $request->validate([
-            'verification_code'=>'required'
+            'verification_code' => 'required'
         ]);
         return $this->verifyCode($request['verification_code']);
 
