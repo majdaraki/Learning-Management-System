@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1\Teacher;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\V1\Teacher\DeleteVideoRequest;
 use App\Http\Requests\Api\V1\Teacher\StoreVideoRequest;
 use App\Http\Requests\Api\V1\Teacher\UpdateVideoRequest;
 use App\Models\Course;
@@ -94,7 +95,7 @@ class CourseVideosController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Course $course, Video $video)
+    public function destroy(DeleteVideoRequest $request,Course $course, Video $video)
     {
         return DB::transaction(function () use ($video) {
             $current_video = $video->name;

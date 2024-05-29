@@ -5,7 +5,7 @@ namespace App\Http\Requests\Api\V1\Teacher;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
-class UpdateVideoRequest extends FormRequest
+class DeleteVideoRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,8 +25,7 @@ class UpdateVideoRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'video' => [],
-            'description' => ['string'],
+            //
         ];
     }
 }

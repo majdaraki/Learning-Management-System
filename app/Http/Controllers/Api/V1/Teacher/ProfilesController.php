@@ -91,7 +91,7 @@ class ProfilesController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.__________________________________ delete all courses for this teacher .
+     * Remove the specified resource from storage.
      */
     public function destroy()
     {
