@@ -29,7 +29,7 @@ class QuizRequest extends FormRequest
         return [
             'quiz' => 'required|array',
             'quiz.quiz_name' => 'required|string|max:255',
-            'quiz.after_video' => 'required|boolean',
+            'quiz.after_video' => 'required|numeric',
             'quiz.timer' => 'required|integer|min:1',
             'questions' => 'required|array',
             'questions.*.question_text' => 'required|string',
