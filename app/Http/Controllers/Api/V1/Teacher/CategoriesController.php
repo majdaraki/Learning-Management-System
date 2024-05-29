@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1;
+namespace App\Http\Controllers\Api\V1\Teacher;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
@@ -13,8 +13,10 @@ class CategoriesController extends Controller
      */
     public function index()
     {
-        //
+        $categories = Category::parents()->with('childrens')->get();
+        return response()->json($categories);
     }
+
 
     /**
      * Show the form for creating a new resource.
