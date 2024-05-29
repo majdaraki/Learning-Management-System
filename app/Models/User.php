@@ -62,7 +62,7 @@ class User extends Authenticatable
         if (!$image) {
             return '';
         }
-        return asset('storage/User/' . $image);
+        return asset('storage/' . $image);
     }
 
 

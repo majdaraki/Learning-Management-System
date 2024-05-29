@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Api\V1\Teacher;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\V1\Teacher\DeleteVideoRequest;
+use App\Http\Requests\Api\V1\Teacher\StoreVideoRequest;
+use App\Http\Requests\Api\V1\Teacher\UpdateVideoRequest;
 use App\Models\Course;
 use App\Models\Video;
 use App\Traits\Media;
@@ -32,9 +35,21 @@ class CourseVideosController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request, Course $course)
+    public function store(StoreVideoRequest $request, Course $course)
     {
-        //
+        return DB::transaction(function () use ($request, $course) {
+            $request_video = $request->video;
+            $video = $this->setMediaName([$request_video], 'Courses/Videos')[0];
+            $course->videos()->create(
+                array_merge(
+                    ['name' => $video],
+                    $request->all()
+                )
+            );
+            $this->saveMedia([$request_video], [$video], 'public');
+            return $this->sudResponse('Video Created Successfully', 201);
+        });
+
     }
 
     /**
@@ -56,15 +71,22 @@ class CourseVideosController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Course $course, Video $video)
+    public function update(UpdateVideoRequest $request, Course $course, Video $video)
     {
         return DB::transaction(function () use ($request, $video) {
-            $request_video = $request->video;
-            $current_video = $video->name;
-            $new_video = $this->setMediaName([$request_video], 'Videos')[0];
-            $video->update(['name' => $new_video]);
-            $this->saveMedia([$request_video], [$new_video], 'public');
-            $this->deleteMedia('storage', [$current_video]);
+            $new_video = null;
+            if ($request->hasFile('video')) {
+                $request_video = $request->video;
+                $current_video = $video->name;
+                $new_video = $this->setMediaName([$request_video], 'Courses/Videos')[0];
+                $this->saveMedia([$request_video], [$new_video], 'public');
+                $this->deleteMedia('storage', [$current_video]);
+            }
+
+            $video->update([
+                'name' => $new_video ? $new_video : $video->name,
+                'description' => $request->description
+            ]);
 
             return $this->sudResponse('Video updated successfully.');
         });
@@ -73,11 +95,11 @@ class CourseVideosController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Course $course, Video $video)
+    public function destroy(DeleteVideoRequest $request,Course $course, Video $video)
     {
-        return DB::transaction(function () use($course,$video) {
+        return DB::transaction(function () use ($video) {
             $current_video = $video->name;
-            $course->videos()->where('id',$video->id)->delete();
+            $video->delete();
             $this->deleteMedia('storage', [$current_video]);
             return $this->sudResponse('Video Deleted Successfully');
         });
