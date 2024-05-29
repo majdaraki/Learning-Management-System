@@ -4,9 +4,8 @@ namespace App\Http\Requests\Api\V1\Teacher;
 
 use App\Models\Course;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
 
-class UpdateCourseRequest extends FormRequest
+class StoreCourseRequest extends FormRequest
 {
     // protected $stopOnFirstFailure = true;
 
@@ -15,7 +14,7 @@ class UpdateCourseRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return ($this->course->teacher_id == Auth::id());
+        return true;
     }
 
     /**
@@ -27,9 +26,9 @@ class UpdateCourseRequest extends FormRequest
     {
 
         return [
-            'name' => ['string'],
-            'description' => ['nullable', 'string'],
-            'category_id' => ['nullable', 'exists:categories,id'],
+            'name' => ['required', 'string', 'max:255'],
+            'description' => ['required', 'string', 'max:255'],
+            'category_id' => ['required', 'exists:categories,id'],
             'image' => ['image'],
         ];
     }

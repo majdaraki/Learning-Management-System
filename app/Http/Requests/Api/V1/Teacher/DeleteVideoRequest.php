@@ -2,20 +2,19 @@
 
 namespace App\Http\Requests\Api\V1\Teacher;
 
-use App\Models\Course;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
-class UpdateCourseRequest extends FormRequest
+class DeleteVideoRequest extends FormRequest
 {
-    // protected $stopOnFirstFailure = true;
-
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return ($this->course->teacher_id == Auth::id());
+        $videos_ids = $this->course->videos()->pluck('id')->toArray();
+        $video_id = ($this->segments()[6]);
+        return ($this->course->teacher_id == Auth::id()) && (in_array($video_id,$videos_ids));
     }
 
     /**
@@ -25,12 +24,8 @@ class UpdateCourseRequest extends FormRequest
      */
     public function rules(): array
     {
-
         return [
-            'name' => ['string'],
-            'description' => ['nullable', 'string'],
-            'category_id' => ['nullable', 'exists:categories,id'],
-            'image' => ['image'],
+            //
         ];
     }
 }
