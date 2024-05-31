@@ -5,7 +5,7 @@ use App\Http\Controllers\Api\V1\Teacher\Auth\{
     ForgetPassword,
     RegisterController,
     LoginController,
-    ResetPassword,
+    ResetPassword
 };
 
 
