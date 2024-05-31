@@ -7,7 +7,8 @@ use App\Models\Question;
 use App\Models\Quiz;
 use Illuminate\Http\Request;
 use App\Http\Requests\Api\V1\Teacher\{
-    UpdateQuestionRequest
+    UpdateQuestionRequest,
+    QuestionRequest
 };
 use Illuminate\Support\Facades\{
     Auth,
@@ -35,9 +36,22 @@ class QuizQuestionsController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request, Quiz $quiz)
+    public function store(QuestionRequest $request, Quiz $quiz)
     {
-        //
+
+        foreach ($request['questions'] as $questionData) {
+            $question = $quiz->questions()->create([
+                'question_text' => $questionData['question_text'],
+            ]);
+            foreach ($questionData['choices'] as $choiceData) {
+                $question->choices()->create([
+                    'choice_text' => $choiceData['choice_text'],
+                    'is_correct' => $choiceData['is_correct'],
+                ]);
+            }
+        }
+
+        return response()->json(['message' => 'Questions  created successfully.'], 200);
     }
 
     /**
