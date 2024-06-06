@@ -6,7 +6,7 @@ use App\Models\Course;
 use App\Models\Quiz;
 use Illuminate\Foundation\Http\FormRequest;
 
-class QuizRequest extends FormRequest
+class QuestionRequest extends FormRequest
 {
     // protected $stopOnFirstFailure = true;
 
@@ -27,14 +27,10 @@ class QuizRequest extends FormRequest
     {
 
         return [
-            'quiz' => 'required|array',
-            'quiz.quiz_name' => 'required|string|max:255',
-            'quiz.after_video' => 'required|numeric',
-            'quiz.timer' => 'required|integer|min:1',
             'questions' => 'required|array',
             'questions.*.question_text' => 'required|string',
             'questions.*.choices' => 'required|array',
-            'questions.*.choices.*.text' => 'required|string',
+            'questions.*.choices.*.choice_text' => 'required|string',
             'questions.*.choices.*.is_correct' => 'required|boolean',
         ];
     }

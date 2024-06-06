@@ -4,10 +4,12 @@ use App\Http\Controllers\Api\V1\Teacher\{
     ProfilesController,
     CourseVideosController,
     CourseQuizzesController,
-    QuizQuestionsController
+    QuizQuestionsController,
+    CategoriesController
 };
-
+Route::apiResource('categories',CategoriesController::class);
 Route::prefix('teachers/')
+
     ->middleware(['auth:sanctum', 'teacher'])
     ->group(function () {
         Route::get('profile', [ProfilesController::class , 'show']);
