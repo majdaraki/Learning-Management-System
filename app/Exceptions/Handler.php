@@ -64,13 +64,13 @@ class Handler extends ExceptionHandler
         if ($e instanceof UniqueConstraintViolationException) {
             return response()->json([
                 'message' => 'This record is already exists.',
-            ]);
+            ], 400);
         }
 
         if ($e instanceof QueryException) {
             return response()->json([
                 'message' => 'Unknown sql error.',
-            ]);
+            ], 400);
         }
 
         if ($e instanceof RouteNotFoundException) {

@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -100,6 +101,10 @@ class User extends Authenticatable
 
     //student relations and methods
     // ________________________________
+
+    public function wallet() : HasOne {
+        return $this->hasOne(Wallet::class);
+    }
     public function questions(): BelongsToMany
     {
         return $this->belongsToMany(Question::class, 'answers');
@@ -163,6 +168,11 @@ class User extends Authenticatable
             ->where('quiz_id', $quiz->id)
             ->pluck('grade')->first();
 
+    }
+
+    public function canBuy(Course $course) : bool {
+        $wallet = $this->wallet;
+        return ($wallet->balance + $wallet->points * 0.01) >= $course->price;
     }
 
     // ________________________________

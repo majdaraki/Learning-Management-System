@@ -31,6 +31,7 @@ class EnrollRequest extends FormRequest
         ];
     }
 
+    // Check if the student hasn't already enrolled in the course.
     public function withValidator(Validator $validator): void
     {
         $user_courses = $this->user()->coursesEnrollments;
@@ -39,7 +40,6 @@ class EnrollRequest extends FormRequest
             $data = $validator->validated();
             if (!empty ($data)) {
                 $course = Course::find($data['course_id']);
-                // Check if the user hasn't enrolled in the course already
                 if ($user_courses->contains($course)) {
                     $validator->errors()->add('course_id', 'You\'ve already enrolled in this course.');
                 }

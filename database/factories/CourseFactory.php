@@ -22,6 +22,7 @@ class CourseFactory extends Factory
             'teacher_id' => fake()->numberBetween(3,10),
             'description' => fake()->paragraph(3),
             'total_likes' => fake()->numberBetween(1,50),
+            'price' => fake()->numberBetween(0,2000),
         ];
     }
 }

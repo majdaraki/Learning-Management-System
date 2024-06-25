@@ -100,6 +100,36 @@ class DatabaseSeeder extends Seeder
 
         User::factory(10)->create();
 
+        $courses = Course::factory(20)->create();
+        $quizzes_collections = [];
+        $questions_collections = [];
 
-}
+        foreach ($courses as $course) {
+            $quizzes_collections[] = Quiz::factory(5)->create([
+                'course_id' => $course->id,
+            ]);
+        }
+
+
+        foreach ($quizzes_collections as $collection) {
+            foreach ($collection as $quiz) {
+                $questions_collections[] = Question::factory(5)->create([
+                    'quiz_id' => $quiz->id,
+                ]);
+            }
+        }
+
+
+        foreach ($questions_collections as $collection) {
+            foreach ($collection as $question) {
+                Choice::factory(3)->create([
+                    'question_id' => $question->id,
+                ]);
+                Choice::factory()->create([
+                    'question_id' => $question->id,
+                    'is_correct' => true,
+                ]);
+            }
+        }
+    }
 }
