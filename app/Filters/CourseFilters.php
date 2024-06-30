@@ -14,4 +14,9 @@ class CourseFilters extends BaseFilter
     {
         return $query->where('name', 'like', '%' . $this->request->input('search') . '%');
     }
+
+    public function categoryId(Builder $query) : Builder {
+        return $query->where('category_id',$this->request->input('categoryId'));
+    }
+
 }

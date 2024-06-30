@@ -32,12 +32,7 @@ class Course extends BaseModel
         'category_name',
         'created_from',
         'image',
-        'videos',
     ];
-
-    // protected $with = [
-    //     'teacher',
-    // ];
 
     public function getImageAttribute()
     {

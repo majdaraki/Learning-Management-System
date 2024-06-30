@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('courses', function (Blueprint $table) {
-            $table->enum('status', ['active','not_active'])->default('not_active')->after('total_likes');
+            $table->enum('status', ['active','inactive'])->default('inactive')->after('total_likes');
         });
     }
 
