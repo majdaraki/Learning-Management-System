@@ -1,11 +1,11 @@
 <?php
-
+use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Api\V1\Teacher\Auth\{
     ForgetPassword,
     RegisterController,
     LoginController,
-    ResetPassword,
+    ResetPassword
 };
 
 

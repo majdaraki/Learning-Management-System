@@ -13,7 +13,7 @@ use Illuminate\Database\Seeder;
 use App\Models\User;
 use Illuminate\Support\Carbon;
 use Spatie\Permission\Models\Role;
-
+use Spatie\Permission\Models\Permission;
 class DatabaseSeeder extends Seeder
 {
     /**
@@ -42,6 +42,27 @@ class DatabaseSeeder extends Seeder
                 'name' => 'student'
             ],
         ]);
+        $roles = [ 'admin'];
+
+        $permissions = [
+            'CRUD_COURSE',
+            'CRUD_QUIZ',
+            'CRUD_VIDEO',
+            'CRUD_QUESTION'
+        ];
+
+        foreach ($permissions as $permission) {
+            Permission::create(['name' => $permission]);
+        }
+
+
+        $allPermissions = Permission::all('id')->pluck('id')->toArray();
+        foreach ($roles as $role) {
+            $roleModel = Role::where('name', $role)->first();
+            $roleModel->permissions()->attach($allPermissions);
+        }
+
+
         Category::insert([
             [
                 'name' => 'programming',
@@ -96,10 +117,48 @@ class DatabaseSeeder extends Seeder
             'last_name' => 'maleh',
             'email' => 'mounirtoo.22@gmail.com',
             'password' => bcrypt('password'),
-        ])->assignRole('teacher');
+        ])->assignRole('student');
+
+        User::create([
+            'first_name' => 'milad',
+            'last_name' => 'andrawos',
+            'email' => 'admin@gmail.com',
+            'password' => bcrypt('password'),
+            'status'=>'active',
+        ])->assignRole('admin');
 
         User::factory(10)->create();
 
+        $courses = Course::factory(20)->create();
+        $quizzes_collections = [];
+        $questions_collections = [];
 
-}
+        foreach ($courses as $course) {
+            $quizzes_collections[] = Quiz::factory(5)->create([
+                'course_id' => $course->id,
+            ]);
+        }
+
+
+        foreach ($quizzes_collections as $collection) {
+            foreach ($collection as $quiz) {
+                $questions_collections[] = Question::factory(5)->create([
+                    'quiz_id' => $quiz->id,
+                ]);
+            }
+        }
+
+
+        foreach ($questions_collections as $collection) {
+            foreach ($collection as $question) {
+                Choice::factory(3)->create([
+                    'question_id' => $question->id,
+                ]);
+                Choice::factory()->create([
+                    'question_id' => $question->id,
+                    'is_correct' => true,
+                ]);
+            }
+        }
+    }
 }

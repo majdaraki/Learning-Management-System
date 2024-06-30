@@ -22,6 +22,7 @@ class Course extends BaseModel
      */
     protected $fillable = [
         'name',
+        'price',
         'category_id',
         'total_likes',
         'teacher_id',
@@ -31,12 +32,7 @@ class Course extends BaseModel
         'category_name',
         'created_from',
         'image',
-        'videos',
     ];
-
-    // protected $with = [
-    //     'teacher',
-    // ];
 
     public function getImageAttribute()
     {
@@ -54,7 +50,7 @@ class Course extends BaseModel
             ->get(['videoable_type', 'name', 'description', 'id'])
             ->map(function ($video) {
                 $dir = explode('\\', $video->videoable_type)[2];
-                unset ($video->videoable_type);
+                unset($video->videoable_type);
                 return [
                     'id' => $video->id,
                     'name' => asset('storage/' . $video->name),

@@ -21,6 +21,10 @@ class StudentResource extends JsonResource
             'email' => $this->email,
             'created_from' => $this->created_at->diffForHumans(),
             'image' => $this->image,
+            'wallet' => [
+                'balance' => $this->wallet->balance,
+                'points' => $this->wallet->points,
+            ]
         ];
     }
 }

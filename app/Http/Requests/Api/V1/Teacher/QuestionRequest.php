@@ -2,19 +2,19 @@
 
 namespace App\Http\Requests\Api\V1\Teacher;
 
+use App\Models\Course;
+use App\Models\Quiz;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
 
-class UpdateVideoRequest extends FormRequest
+class QuestionRequest extends FormRequest
 {
+    // protected $stopOnFirstFailure = true;
+
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-      /*$videos_ids = $this->course->videos()->pluck('id')->toArray();
-        $video_id = ($this->segments()[6]);
-        return ($this->course->teacher_id == Auth::id()) && (in_array($video_id,$videos_ids));*/
         return true;
     }
 
@@ -25,9 +25,13 @@ class UpdateVideoRequest extends FormRequest
      */
     public function rules(): array
     {
+
         return [
-            'video' => [],
-            'description' => ['string'],
+            'questions' => 'required|array',
+            'questions.*.question_text' => 'required|string',
+            'questions.*.choices' => 'required|array',
+            'questions.*.choices.*.choice_text' => 'required|string',
+            'questions.*.choices.*.is_correct' => 'required|boolean',
         ];
     }
 }

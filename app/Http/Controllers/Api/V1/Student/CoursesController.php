@@ -42,11 +42,17 @@ class CoursesController extends Controller
     {
         return DB::transaction(function () use ($request) {
             $student = Auth::user();
+            $course = Course::findOrFail($request->course_id);
+            if (!$student->canBuy($course)) {
+                return $this->sudResponse('You don\'t have enough balance to buy this course.', 400);
+            }
+
+            $this->subtractBalance($student, $course);
 
             $enrollment = $student->enrollments()
-                ->where('course_id', $request->course_id)
+                ->where('course_id', $course->id)
                 ->firstOrCreate(values: [
-                    'course_id' => $request->course_id,
+                    'course_id' => $course->id,
                     'student_has_enrolled' => true
                 ]);
 
@@ -63,7 +69,7 @@ class CoursesController extends Controller
      */
     public function show(Course $course)
     {
-        return $this->indexOrShowResponse('course', new CourseResource($course->load(['quizzes.questions.choices', 'teacher'])));
+        return $this->indexOrShowResponse('course', new CourseResource($course->load(['quizzes.questions.choices', 'teacher'])->append('videos')));
     }
 
     /**
@@ -83,9 +89,9 @@ class CoursesController extends Controller
             }
 
             if ($request->is_favorite) {
-                $course->total_likes ++ ;
-            }else {
-                $course->total_likes --;
+                $course->total_likes++;
+            } else {
+                $course->total_likes--;
             }
             $course->save();
             return $this->sudResponse('Updated successfully.');
@@ -139,4 +145,25 @@ class CoursesController extends Controller
         return $this->indexOrShowResponse('courses', Auth::user()->coursesEnrollments()->with('teacher')->get());
     }
 
+    /**
+     * subtract course cost from the student wallet.
+     */
+    public function subtractBalance($student, $course): void
+    {
+        DB::transaction(function () use ($student, $course) {
+            $wallet = $student->wallet;
+
+            if ($wallet->points >= $course->price * 100) {
+                $wallet->points -= $course->price * 100;
+                return;
+            }
+
+            $remaining = $course->price - $wallet->points / 100;
+            $wallet->points = 0;
+            $wallet->balance -= $remaining;
+            $wallet->save();
+            return;
+
+        });
+    }
 }

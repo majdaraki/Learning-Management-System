@@ -28,6 +28,7 @@ return new class extends Migration {
 
             $table->text('description');
             $table->integer('total_likes')->default(0);
+            $table->double('price');
             $table->timestamps();
         });
     }

@@ -37,10 +37,10 @@ class CategoriesController extends Controller
      */
     public function show(Category $category)
     {
-        if (! empty($category->childrens[0])) {
+        // if (! empty($category->childrens[0])) {
             return $this->indexOrShowResponse('categories',$category->childrens);
-        }
-        return $this->indexOrShowResponse('category',$category->load('courses')->unsetRelation('childrens'));
+        // }
+        // return $this->indexOrShowResponse('category',$category->load('courses')->unsetRelation('childrens'));
     }
 
     /**

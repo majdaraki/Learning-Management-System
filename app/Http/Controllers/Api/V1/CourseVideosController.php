@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1\Teacher;
+namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Teacher\DeleteVideoRequest;
@@ -73,11 +73,15 @@ class CourseVideosController extends Controller
      */
     public function update(UpdateVideoRequest $request, Course $course, Video $video)
     {
+        $user=Auth::user();
+      //return $course->videos()->get();
+
         return DB::transaction(function () use ($request, $video) {
             $new_video = null;
             if ($request->hasFile('video')) {
                 $request_video = $request->video;
                 $current_video = $video->name;
+                $this->authorize('update',$video);
                 $new_video = $this->setMediaName([$request_video], 'Courses/Videos')[0];
                 $this->saveMedia([$request_video], [$new_video], 'public');
                 $this->deleteMedia('storage', [$current_video]);
@@ -99,6 +103,7 @@ class CourseVideosController extends Controller
     {
         return DB::transaction(function () use ($video) {
             $current_video = $video->name;
+            $this->authorize('delete',$video);
             $video->delete();
             $this->deleteMedia('storage', [$current_video]);
             return $this->sudResponse('Video Deleted Successfully');

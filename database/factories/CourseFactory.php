@@ -17,11 +17,12 @@ class CourseFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->name,
+            'name' => fake()->word(),
             'category_id' => fake()->numberBetween(3,7),
             'teacher_id' => fake()->numberBetween(3,10),
             'description' => fake()->paragraph(3),
             'total_likes' => fake()->numberBetween(1,50),
+            'price' => fake()->numberBetween(0,2000),
         ];
     }
 }
