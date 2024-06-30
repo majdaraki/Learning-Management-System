@@ -35,7 +35,13 @@ class RegisterController extends Controller
     {
         return DB::transaction(function () use ($request) {
 
-            $student = User::create($request->all());
+            $student = User::create(
+                array_merge(
+                    $request->all(),
+                    ['status' => 'active']
+                )
+            );
+
             Auth::login($student);
 
             $verificationCode = $this->getOrCreateVerificationCode($student->email, 'cheack-email');
