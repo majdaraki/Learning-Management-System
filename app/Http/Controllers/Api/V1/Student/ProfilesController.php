@@ -53,8 +53,8 @@ class ProfilesController extends Controller
                 return $course;
             });
         return response()->json([
-            'student' => new StudentResource($student),
-            'courses' => $courses
+            'student' => new StudentResource($student->load('wallet')),
+            'enrolled_courses' => $courses
         ]);
     }
 

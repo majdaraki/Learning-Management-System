@@ -26,5 +26,6 @@ Route::prefix('students/')
 
         Route::apiResource('tests', QuizzesController::class)->only('store');
 
-        Route::get('teachers/{teacher}', [TeachersController::class, 'show']);
+        // Route::get('teachers/{teacher}', [TeachersController::class, 'show']);
+        Route::apiResource('teachers',TeachersController::class)->only('show');
     });

@@ -41,6 +41,7 @@ class QuizzesController extends Controller
     {
         return DB::transaction(function () use ($request) {
             $student = Auth::user();
+            $wallet = $student->wallet;
             $quiz = Quiz::findOrFail($request->quiz_id);
             $course = $quiz->course;
             $quizzes_count = $course->quizzes()->count();
@@ -77,6 +78,13 @@ class QuizzesController extends Controller
             $student->enrollments()
                 ->where('course_id', $course->id)
                 ->update(['progress' => $progress]);
+
+            if ($progress == 100) {
+                $wallet->points += 100;
+                $wallet->save();
+
+                return $this->sudResponse('Congrats! You\'ve got : ' . $grade . '%  in this quiz, and extra 100 points for completing this course.');
+            }
 
             return $this->sudResponse('Congrats! You\'ve got : ' . $grade . '%  in this quiz.');
 

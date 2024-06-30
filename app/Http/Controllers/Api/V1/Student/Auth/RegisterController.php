@@ -9,6 +9,7 @@ use App\Models\{
     User,
     Code
 };
+use App\Models\Wallet;
 use App\Traits\{
     VerifyCodeForRegister,
     ExpierCode,
@@ -46,6 +47,8 @@ class RegisterController extends Controller
                 $student->image()->create(['name' => $image_name]);
                 $this->saveMedia([$request_image], [$image_name], 'public');
             }
+
+            Wallet::create(['user_id' => $student->id]);
 
 
             Notification::route('mail', $student->email)
