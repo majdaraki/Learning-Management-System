@@ -1,20 +1,28 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1;
+namespace App\Http\Controllers\Api\V1\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Question;
+use App\Models\User;
 use Illuminate\Http\Request;
 
-class QuestionsController extends Controller
+class StudentController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        $students_not_active = User::role('student')->where('status','not_active')->get();
+        $students_active=User::role('student')->where('status','active')->get();
+        $students=[
+         'students_active'=>$students_active,
+           'students_not_active'=>$students_not_active
+        ];
+        return $this->indexOrShowResponse('students', $students);
     }
+
+
 
     /**
      * Show the form for creating a new resource.
@@ -35,7 +43,7 @@ class QuestionsController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Question $question)
+    public function show(User $user)
     {
         //
     }
@@ -43,7 +51,7 @@ class QuestionsController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Question $question)
+    public function edit(User $user)
     {
         //
     }
@@ -51,7 +59,7 @@ class QuestionsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Question $question)
+    public function update(Request $request, User $user)
     {
         //
     }
@@ -59,7 +67,7 @@ class QuestionsController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Question $question)
+    public function destroy(User $user)
     {
         //
     }

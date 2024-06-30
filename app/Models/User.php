@@ -165,7 +165,11 @@ class User extends Authenticatable
 
     }
 
-    // ________________________________
+    public function isActive(): bool
+    {
+        return ($this->status == 'active');
+    }
 
+    // ________________________________
 
 }
