@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1\Teacher;
+namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Teacher\QuizResource;
@@ -18,9 +18,7 @@ use Illuminate\Support\Facades\{
 
 class CourseQuizzesController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index(Course $course)
     {
         //
@@ -71,7 +69,9 @@ class CourseQuizzesController extends Controller
      */
     public function show( $course_id,  $quiz_id)
     {
+        $teacher=Auth::user();
         $quiz=Quiz::findOrFail($quiz_id);
+        $this->authorize('view',$quiz);
 
         return new QuizResource($quiz->load('questions.choices'));
     }
@@ -97,7 +97,9 @@ class CourseQuizzesController extends Controller
         public function update(UpdateQuizReuest $request, Course $course,  $quiz_id)
 
         {
+
             $quiz=Quiz::findOrFail($quiz_id);
+            $this->authorize('update',$quiz);
             if ($quiz->course_id != $course->id) {
                 return $this->sudResponse('The quiz does not belong to the specified course.');
             }
@@ -114,6 +116,7 @@ class CourseQuizzesController extends Controller
     {
         $teacher = Auth::user();
          $quiz=Quiz::findOrFail($quiz_id);
+         $this->authorize('delete',$quiz);
         DB::beginTransaction();
 
         try {

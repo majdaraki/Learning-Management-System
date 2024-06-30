@@ -170,12 +170,17 @@ class User extends Authenticatable
 
     }
 
+
+    public function isActive(): bool
+    {
+        return ($this->status == 'active');
+}
     public function canBuy(Course $course) : bool {
         $wallet = $this->wallet;
         return ($wallet->balance + $wallet->points * 0.01) >= $course->price;
+
     }
 
     // ________________________________
-
 
 }

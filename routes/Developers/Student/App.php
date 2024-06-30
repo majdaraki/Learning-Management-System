@@ -1,4 +1,5 @@
 <?php
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\Student\{
     HomePageController,
     CategoriesController,
@@ -9,7 +10,7 @@ use App\Http\Controllers\Api\V1\Student\{
 };
 
 Route::prefix('students/')
-    ->middleware(['auth:sanctum', 'student'])
+    ->middleware(['auth:sanctum', 'student','verified','active'])
     ->group(function () {
         Route::get('profile', [ProfilesController::class , 'show']);
         Route::put('profile', [ProfilesController::class , 'update']);

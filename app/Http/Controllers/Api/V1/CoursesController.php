@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1\Teacher;
+namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Resources\Teacher\{
     CourseResource,
@@ -41,11 +41,17 @@ class CoursesController extends Controller
      */
     public function index(CourseFilters $courseFilters)
     {
-        $teacher = Auth::user();
+        // $this->authorize('viewAny', Course::class);
+        $user = Auth::user();
+       
+        if ($user->can('CRUD_COURSE')) {
+            $courses = Course::withCount('students')->get();
+        }
+        else{
         $courses = $courseFilters->applyFilters(
-            $teacher->courses()->withCount('students')->getQuery()
+            $user->courses()->withCount('students')->getQuery()
         )->get();
-
+        }
         return $this->indexOrShowResponse('courses', $courses);
     }
 
@@ -75,6 +81,7 @@ class CoursesController extends Controller
      */
     public function show(Course $course)
     {
+         $this->authorize('view',$course);
         $course->load('quizzes.questions.choices');
         return $this->indexOrShowResponse('course',new DetailsCourse($course));
     }
@@ -85,6 +92,9 @@ class CoursesController extends Controller
 
     public function update(UpdateCourseRequest $request, Course $course)
     {
+
+        $this->authorize('update',$course);
+
         return DB::transaction(function () use ($request, $course) {
             $teacher = Auth::user();
             $course->update($request->validated());
@@ -107,14 +117,15 @@ class CoursesController extends Controller
      */
     public function destroy(Course $course)
     {
+        $this->authorize('delete',$course);
         $teacher = Auth::user();
-        throw_if($course->teacher_id != $teacher->id, new AuthorizationException());
+        //throw_if($course->teacher_id != $teacher->id, new AuthorizationException());
 
         return DB::transaction(function () use ($teacher, $course) {
             $current_image = $course->image()->pluck('name')->first();
             $current_videos = $course->videos()->pluck('name')->toArray();
             $course->image()->delete();
-            $course->videos()->delete();
+           $course->videos()->delete();
             $course->delete();
             $this->deleteMedia(
                 'storage',
