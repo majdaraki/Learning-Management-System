@@ -47,7 +47,7 @@ class CoursesController extends Controller
                 return $this->sudResponse('You don\'t have enough balance to buy this course.', 400);
             }
 
-            $this->subtractBalance($course);
+            $this->subtractBalance($student, $course);
 
             $enrollment = $student->enrollments()
                 ->where('course_id', $course->id)
@@ -69,7 +69,7 @@ class CoursesController extends Controller
      */
     public function show(Course $course)
     {
-        return $this->indexOrShowResponse('course', new CourseResource($course->load(['quizzes.questions.choices', 'teacher'])));
+        return $this->indexOrShowResponse('course', new CourseResource($course->load(['quizzes.questions.choices', 'teacher'])->append('videos')));
     }
 
     /**
@@ -146,12 +146,11 @@ class CoursesController extends Controller
     }
 
     /**
-     *
+     * subtract course cost from the student wallet.
      */
-    public function subtractBalance($course): void
+    public function subtractBalance($student, $course): void
     {
-        DB::transaction(function () use ($course){
-            $student = Auth::user();
+        DB::transaction(function () use ($student, $course) {
             $wallet = $student->wallet;
 
             if ($wallet->points >= $course->price * 100) {

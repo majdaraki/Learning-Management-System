@@ -17,6 +17,7 @@ class CourseResource extends JsonResource
             'category_name' => $this->category_name,
             'description' => $this->description,
             'total_likes' => $this->total_likes,
+            'price' => $this->price,
             'created_from' => $this->created_from,
             'image' => $this->image,
             'videos' => $this->videos,
