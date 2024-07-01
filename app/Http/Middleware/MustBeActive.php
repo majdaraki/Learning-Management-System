@@ -18,7 +18,7 @@ class MustBeActive
     {
         if (Auth::check() && !Auth::user()->isActive()) {
             return response()->json([
-                'message' => 'Your account not active',
+                'message' => 'Your account is inactive right now, contact support please.',
             ],403);
         }
 
