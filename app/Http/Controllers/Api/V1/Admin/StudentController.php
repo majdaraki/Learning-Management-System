@@ -45,7 +45,7 @@ class StudentController extends Controller
      */
     public function show(User $user)
     {
-        //
+        return 'mario';
     }
 
     /**
@@ -61,7 +61,9 @@ class StudentController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        //
+        $user=User::findOrFail($user);
+        
+        return $this->sudResponse('update status of student');
     }
 
     /**
