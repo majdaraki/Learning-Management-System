@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\{
     Auth,
     DB
 };
+use Illuminate\Auth\Access\AuthorizationException;
+
 
 class CoursesController extends Controller
 {
@@ -31,7 +33,7 @@ class CoursesController extends Controller
      */
     public function index()
     {
-        $courses = $this->courseFilters->applyFilters(Course::query())->with('teacher')->get();
+        $courses = $this->courseFilters->applyFilters(Course::query())->with('teacher')->active()->get();
         return $this->indexOrShowResponse('courses', $courses);
     }
 
@@ -69,6 +71,7 @@ class CoursesController extends Controller
      */
     public function show(Course $course)
     {
+        throw_if($course->status != 'active' , new AuthorizationException());
         return $this->indexOrShowResponse('course', new CourseResource($course->load(['quizzes.questions.choices', 'teacher'])->append('videos')));
     }
 

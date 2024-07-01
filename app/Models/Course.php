@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -27,6 +28,7 @@ class Course extends BaseModel
         'total_likes',
         'teacher_id',
         'description',
+        'status',
     ];
     protected $appends = [
         'category_name',
@@ -58,9 +60,6 @@ class Course extends BaseModel
                 ];
             });
     }
-
-
-
 
     public function getTeacherNameAttribute()
     {
@@ -122,5 +121,13 @@ class Course extends BaseModel
     {
         return $this->belongsTo(User::class);
     }
+
+
+    // scopes
+    public static function scopeActive(Builder $query): void
+    {
+        $query->where('status', 'active');
+    }
+
 
 }
