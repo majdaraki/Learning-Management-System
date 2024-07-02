@@ -31,6 +31,7 @@ class UpdateCourseRequest extends FormRequest
             'description' => ['nullable', 'string'],
             'category_id' => ['nullable', 'exists:categories,id'],
             'image' => ['image'],
+            'price'=>'nullable|numeric'
         ];
     }
 }
