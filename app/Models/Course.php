@@ -29,8 +29,8 @@ class Course extends BaseModel
         'teacher_id',
         'description',
         'status',
-
     ];
+    
     protected $appends = [
         'category_name',
         'created_from',
