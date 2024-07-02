@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Api\V1\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Course;
 use Illuminate\Http\Request;
-
-class CoursesController extends Controller
+use App\Http\Requests\Api\V1\Admin\{
+    UpdateStatus
+};
+class CourseController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -51,9 +53,10 @@ class CoursesController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Course $course)
+    public function update(UpdateStatus $request, Course $course)
     {
-        //
+        $course->update($request->all());
+        return $this->sudResponse('status of course update');
     }
 
     /**

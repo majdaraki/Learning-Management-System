@@ -27,6 +27,7 @@ class Course extends BaseModel
         'total_likes',
         'teacher_id',
         'description',
+        'status',
     ];
     protected $appends = [
         'category_name',

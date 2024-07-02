@@ -110,6 +110,7 @@ class DatabaseSeeder extends Seeder
             'last_name' => 'andrawos',
             'email' => 'almowafratys09@gmail.com',
             'password' => bcrypt('password'),
+            'created_at' => Carbon::now(),
         ])->assignRole('teacher');
 
         User::create([
@@ -117,6 +118,7 @@ class DatabaseSeeder extends Seeder
             'last_name' => 'maleh',
             'email' => 'mounirtoo.22@gmail.com',
             'password' => bcrypt('password'),
+            'created_at' => Carbon::now(),
         ])->assignRole('student');
 
         User::create([
@@ -125,6 +127,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'admin@gmail.com',
             'password' => bcrypt('password'),
             'status'=>'active',
+            'created_at' => Carbon::now(),
         ])->assignRole('admin');
 
         User::factory(10)->create();

@@ -23,8 +23,8 @@ class CategoriesController extends Controller
      */
     public function index()
     {
-        $categories = Category::parents()->with('childrens')->get();
-        return response()->json($categories);
+        $categories = Category::parents()->get();
+        return $this->indexOrShowResponse('body',$categories);
     }
 
     /**
