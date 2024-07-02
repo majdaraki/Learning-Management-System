@@ -2,7 +2,12 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\Admin\{
     CategoriesController,
-    StudentController
+    StudentController,
+    TeacherController,
+    CourseController,
+    WalletController
+
+
 
 };
 use App\Http\Controllers\Api\V1\{
@@ -27,4 +32,7 @@ Route::prefix('admin/')
         Route::apiResource('quizzes.questions', QuizQuestionsController::class);
 
         Route::apiResource('students',StudentController::class);
+        Route::apiResource('teachers',TeacherController::class);
+        Route::apiResource('courses',CourseController::class);
+        Route::put('wallet/{id}',[WalletController::class,'update']);
     });

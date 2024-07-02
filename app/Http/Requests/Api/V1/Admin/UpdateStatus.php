@@ -1,13 +1,15 @@
 <?php
 
-namespace App\Http\Requests\Api\V1\Teacher;
+namespace App\Http\Requests\Api\V1\Admin;
 
-use App\Models\Course;
+use App\Models\User;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreCourseRequest extends FormRequest
+class UpdateStatus extends FormRequest
 {
-    // protected $stopOnFirstFailure = true;
+
+    protected $stopOnFirstFailure = true;
 
     /**
      * Determine if the user is authorized to make this request.
@@ -24,13 +26,10 @@ class StoreCourseRequest extends FormRequest
      */
     public function rules(): array
     {
-
         return [
-            'name' => ['required', 'string', 'max:255'],
-            'description' => ['required', 'string', 'max:255'],
-            'category_id' => ['required', 'exists:categories,id'],
-            'image' => ['image'],
-            'price'=>'nullable|numeric'
+            'status'=>'required',
         ];
     }
+
+
 }
