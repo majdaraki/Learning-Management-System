@@ -5,10 +5,8 @@ use App\Http\Controllers\Api\V1\Admin\{
     StudentController,
     TeacherController,
     CourseController,
-    WalletController
-
-
-
+    WalletController,
+    IssuesController
 };
 use App\Http\Controllers\Api\V1\{
     CoursesController,
@@ -19,7 +17,7 @@ use App\Http\Controllers\Api\V1\{
 };
 
 
-Route::prefix('admin/')
+Route::prefix('admins/')
 
     ->middleware(['auth:sanctum','admin'])
     ->group(function () {
@@ -35,4 +33,6 @@ Route::prefix('admin/')
         Route::apiResource('teachers',TeacherController::class);
         Route::apiResource('courses',CourseController::class);
         Route::put('wallet/{id}',[WalletController::class,'update']);
+
+        Route::apiResource('issues',IssuesController::class)->only('index');
     });

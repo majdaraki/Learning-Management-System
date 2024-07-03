@@ -9,16 +9,16 @@ use App\Http\Controllers\Api\V1\Admin\Auth\{
 
 
 // Auth Routes
-Route::prefix('admins/')->group(function () {
-Route::post('/login', [LoginController::class, 'create']);
-Route::get('/logout', [LoginController::class, 'destroy'])->middleware('auth:sanctum');
+Route::prefix('admins/auth/')->group(function () {
+    Route::post('login', [LoginController::class, 'create']);
+    Route::get('logout', [LoginController::class, 'destroy'])->middleware('auth:sanctum');
 
-// Handle Forget Password Routes
+    // Handle Forget Password Routes
 
 
 
-Route::post('forget-password',[ForgetPassword::class,'forgetPassword']);
-Route::post('verify',[ResetPassword::class,'verify']);
-Route::post('reset-password',[ResetPassword::class,'resetPassword']);
+    Route::post('forget-password', [ForgetPassword::class, 'forgetPassword']);
+    Route::post('verify', [ResetPassword::class, 'verify']);
+    Route::post('reset-password', [ResetPassword::class, 'resetPassword']);
 
 });

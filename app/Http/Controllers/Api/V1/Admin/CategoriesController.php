@@ -74,7 +74,7 @@ class CategoriesController extends Controller
             if ($request->hasFile('image')) {
                 $request_image = $request->image;
                 $current_image = $category->image()->pluck('name')->first();
-                $image = $this->setMediaName([$request_image], 'Category')[0];
+                $image = $this->setMediaName([$request_image],'Categories')[0];
                 $category->image()->update(['name' => $image]);
                 $this->saveMedia([$request_image], [$image], 'public');
                 $this->deleteMedia('storage', [$current_image]);
