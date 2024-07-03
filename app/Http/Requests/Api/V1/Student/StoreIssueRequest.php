@@ -1,14 +1,11 @@
 <?php
 
-namespace App\Http\Requests\Api\V1\Teacher;
+namespace App\Http\Requests\Api\V1\Student;
 
-use App\Models\Course;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreCourseRequest extends FormRequest
+class StoreIssueRequest extends FormRequest
 {
-    // protected $stopOnFirstFailure = true;
-
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -24,13 +21,8 @@ class StoreCourseRequest extends FormRequest
      */
     public function rules(): array
     {
-
         return [
-            'name' => ['required', 'string', 'max:255'],
-            'description' => ['required', 'string', 'max:255'],
-            'category_id' => ['required', 'exists:categories,id'],
-            'image' => ['image'],
-            'price'=>'required|numeric'
+            'description' => ['required', 'string']
         ];
     }
 }

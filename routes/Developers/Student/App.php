@@ -6,7 +6,8 @@ use App\Http\Controllers\Api\V1\Student\{
     CoursesController,
     ProfilesController,
     QuizzesController,
-    TeachersController
+    TeachersController,
+    IssuesController
 };
 
 Route::prefix('students/')
@@ -28,4 +29,6 @@ Route::prefix('students/')
 
         // Route::get('teachers/{teacher}', [TeachersController::class, 'show']);
         Route::apiResource('teachers',TeachersController::class)->only('show');
+
+        Route::apiResource('issues',IssuesController::class)->only('store');
     });

@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Api\V1\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Issue;
+use App\Models\Course;
 use Illuminate\Http\Request;
-
-class IssueController extends Controller
+use App\Http\Requests\Api\V1\Admin\{
+    UpdateStatus
+};
+class CourseController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -35,7 +37,7 @@ class IssueController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Issue $question)
+    public function show(Course $course)
     {
         //
     }
@@ -43,7 +45,7 @@ class IssueController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Issue $question)
+    public function edit(Course $course)
     {
         //
     }
@@ -51,15 +53,16 @@ class IssueController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Issue $question)
+    public function update(UpdateStatus $request, Course $course)
     {
-        //
+        $course->update($request->all());
+        return $this->sudResponse('status of course update');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Issue $question)
+    public function destroy(Course $course)
     {
         //
     }

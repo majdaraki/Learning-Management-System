@@ -83,10 +83,16 @@ class QuizzesController extends Controller
                 $wallet->points += 100;
                 $wallet->save();
 
-                return $this->sudResponse('Congrats! You\'ve got : ' . $grade . '%  in this quiz, and extra 100 points for completing this course.');
+                return response()->json([
+                    'message' => 'Congrats! You\'ve earned extra 100 points for completing this course.',
+                    'grade' => $grade,
+                ]);
             }
 
-            return $this->sudResponse('Congrats! You\'ve got : ' . $grade . '%  in this quiz.');
+            return response()->json([
+                'message' => 'Congratiolations!',
+                'grade' => $grade,
+            ]);
 
         });
 
