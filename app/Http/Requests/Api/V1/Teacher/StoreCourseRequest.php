@@ -30,7 +30,7 @@ class StoreCourseRequest extends FormRequest
             'description' => ['required', 'string', 'max:255'],
             'category_id' => ['required', 'exists:categories,id'],
             'image' => ['image'],
-            'price'=>'nullable|numeric'
+            'price'=>'required|numeric'
         ];
     }
 }
