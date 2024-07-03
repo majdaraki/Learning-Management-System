@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\{
     DB
 };
 use App\Traits\Media;
-class WalletController extends Controller
+class WalletsController extends Controller
 {
     use Media;
 

@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\{
     DB
 };
 use App\Traits\Media;
-class TeacherController extends Controller
+class TeachersController extends Controller
 {
     use Media;
     /**

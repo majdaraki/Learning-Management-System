@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\{
     DB
 };
 use App\Traits\Media;
-class StudentController extends Controller
+class StudentsController extends Controller
 {
     use Media;
     /**
