@@ -5,7 +5,7 @@ namespace App\Http\Requests\Api\V1\Admin;
 use App\Models\User;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
-
+use Illuminate\Support\Facades\Auth;
 class UpdateStatus extends FormRequest
 {
 
@@ -16,8 +16,10 @@ class UpdateStatus extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+       // return Auth::user()->getRoleNames()[0] == 'admin';
+       return true;
     }
+
 
     /**
      * Get the validation rules that apply to the request.
@@ -27,7 +29,7 @@ class UpdateStatus extends FormRequest
     public function rules(): array
     {
         return [
-            'status'=>'required',
+            'status'=>'nullable',
         ];
     }
 
