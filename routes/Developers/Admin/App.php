@@ -2,10 +2,9 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\Admin\{
     CategoriesController,
-    StudentController,
-    TeacherController,
-    CourseController,
-    WalletController,
+    StudentsController,
+    TeachersController,
+    WalletsController,
     IssuesController
 };
 use App\Http\Controllers\Api\V1\{
@@ -24,15 +23,15 @@ Route::prefix('admins/')
 
         Route::apiResource('categories',CategoriesController::class);
 
-        Route::apiResource('course', CoursesController::class);
+        Route::apiResource('courses', CoursesController::class);
         Route::apiResource('courses.videos', CourseVideosController::class);
         Route::apiResource('courses.quizzess', CourseQuizzesController::class);
         Route::apiResource('quizzes.questions', QuizQuestionsController::class);
 
-        Route::apiResource('students',StudentController::class);
-        Route::apiResource('teachers',TeacherController::class);
-        Route::apiResource('courses',CourseController::class);
-        Route::put('wallet/{id}',[WalletController::class,'update']);
+        Route::apiResource('students',StudentsController::class);
+        Route::apiResource('teachers',TeachersController::class);
+       
+        Route::put('wallets/{id}',[WalletsController::class,'update']);
 
         Route::apiResource('issues',IssuesController::class)->only('index');
     });

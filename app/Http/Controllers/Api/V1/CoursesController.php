@@ -7,6 +7,9 @@ use App\Http\Resources\Teacher\{
     DetailsCourse
 
 };
+use App\Http\Requests\Api\V1\Admin\{
+    UpdateStatus
+};
 use App\Http\Requests\Api\V1\Teacher\{
     UpdateCourseRequest,
     StoreCourseRequest
@@ -43,7 +46,7 @@ class CoursesController extends Controller
     {
         // $this->authorize('viewAny', Course::class);
         $user = Auth::user();
-       
+
         if ($user->can('CRUD_COURSE')) {
             $courses = Course::withCount('students')->get();
         }
@@ -90,17 +93,21 @@ class CoursesController extends Controller
      * Update the specified resource in storage.
      */
 
-    public function update(UpdateCourseRequest $request, Course $course)
+    public function update(UpdateCourseRequest $request1,UpdateStatus $request2, Course $course)
     {
 
         $this->authorize('update',$course);
 
-        return DB::transaction(function () use ($request, $course) {
-            $teacher = Auth::user();
-            $course->update($request->validated());
 
-            if ($request->hasFile('image')) {
-                $request_image = $request->image;
+        return DB::transaction(function () use ($request1, $request2,$course) {
+            $user = Auth::user();
+            $course->update($request1->validated());
+            if($user->hasRole('admin')){
+                $course->update($request2->validated());
+            }
+
+            if ($request1->hasFile('image')) {
+                $request_image = $request1->image;
                 $current_image = $course->image()->pluck('name')->first();
                 $image = $this->setMediaName([$request_image], 'Courses')[0];
                 $course->image()->update(['name' => $image]);
