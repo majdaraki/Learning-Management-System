@@ -45,7 +45,7 @@ class QuizzesController extends Controller
             $quiz = Quiz::findOrFail($request->quiz_id);
             $course = $quiz->course;
             $quizzes_count = $course->quizzes()->count();
-            $questions_count = count($request->answers);
+            $questions_count = $quiz->questions()->count();
             $correct_answers_count = 0;
 
             foreach ($request->answers as $answer) {
@@ -83,10 +83,16 @@ class QuizzesController extends Controller
                 $wallet->points += 100;
                 $wallet->save();
 
-                return $this->sudResponse('Congrats! You\'ve got : ' . $grade . '%  in this quiz, and extra 100 points for completing this course.');
+                return response()->json([
+                    'message' => 'Congrats! You\'ve earned extra 100 points for completing this course.',
+                    'grade' => $grade,
+                ]);
             }
 
-            return $this->sudResponse('Congrats! You\'ve got : ' . $grade . '%  in this quiz.');
+            return response()->json([
+                'message' => 'Congratiolations!',
+                'grade' => $grade,
+            ]);
 
         });
 

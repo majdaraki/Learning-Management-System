@@ -6,7 +6,8 @@ use App\Http\Controllers\Api\V1\Student\{
     CoursesController,
     ProfilesController,
     QuizzesController,
-    TeachersController
+    TeachersController,
+    IssuesController
 };
 
 Route::prefix('students/')
@@ -24,8 +25,9 @@ Route::prefix('students/')
         Route::get('courses/favorites', [CoursesController::class, 'getFavoritesList']);
         Route::apiResource('courses', CoursesController::class);
 
-        Route::apiResource('tests', QuizzesController::class)->only('store');
+        Route::apiResource('quizzes', QuizzesController::class)->only('store');
 
-        // Route::get('teachers/{teacher}', [TeachersController::class, 'show']);
         Route::apiResource('teachers',TeachersController::class)->only('show');
+
+        Route::apiResource('issues',IssuesController::class)->only('store');
     });

@@ -1,16 +1,11 @@
 <?php
 
-namespace App\Http\Requests\Api\V1\Admin;
+namespace App\Http\Requests\Api\V1\Student;
 
-use App\Models\Category;
-use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateCategoryRequest extends FormRequest
+class StoreIssueRequest extends FormRequest
 {
-
-    protected $stopOnFirstFailure = true;
-
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -27,11 +22,7 @@ class UpdateCategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['string'],
-            'image' => ['image'],
-            'parent_id' => ['integer', 'exists:categories,id']
+            'description' => ['required', 'string']
         ];
     }
-
-
 }
