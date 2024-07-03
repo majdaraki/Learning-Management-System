@@ -45,7 +45,7 @@ class QuizzesController extends Controller
             $quiz = Quiz::findOrFail($request->quiz_id);
             $course = $quiz->course;
             $quizzes_count = $course->quizzes()->count();
-            $questions_count = count($request->answers);
+            $questions_count = $quiz->questions()->count();
             $correct_answers_count = 0;
 
             foreach ($request->answers as $answer) {
