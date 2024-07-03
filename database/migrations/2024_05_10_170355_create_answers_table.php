@@ -27,7 +27,7 @@ return new class extends Migration {
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
 
-            $table->primary(['user_id', 'question_id','chosen_choice_id']);
+            $table->primary(['user_id', 'question_id']);
 
             $table->timestamps();
         });

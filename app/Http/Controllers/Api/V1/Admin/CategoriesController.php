@@ -44,7 +44,7 @@ class CategoriesController extends Controller
         $category=Category::create($request->all());
         if ($request->hasFile('image')) {
             $request_image = $request->image;
-            $image = $this->setMediaName([$request_image], 'Category')[0];
+            $image = $this->setMediaName([$request_image], 'Categories')[0];
             $category->image()->create(['name' => $image]);
             $this->saveMedia([$request_image], [$image], 'public');
         }
