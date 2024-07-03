@@ -25,8 +25,8 @@ class TeacherController extends Controller
         $teachers_not_active = User::role('teacher')->where('status','inactive')->get();
         $teacher_active=User::role('teacher')->where('status','active')->get();
         $teachers=[
-         'students_active'=>$teacher_active,
-           'students_not_active'=>$teachers_not_active
+         'teachers_active'=>$teacher_active,
+           'teachers_inactive'=>$teachers_not_active
         ];
         return $this->indexOrShowResponse('students', $teachers);
     }

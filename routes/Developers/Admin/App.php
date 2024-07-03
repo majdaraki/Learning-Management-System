@@ -26,7 +26,7 @@ Route::prefix('admin/')
 
         Route::apiResource('categories',CategoriesController::class);
 
-        Route::apiResource('courses', CoursesController::class);
+        Route::apiResource('course', CoursesController::class);
         Route::apiResource('courses.videos', CourseVideosController::class);
         Route::apiResource('courses.quizzess', CourseQuizzesController::class);
         Route::apiResource('quizzes.questions', QuizQuestionsController::class);

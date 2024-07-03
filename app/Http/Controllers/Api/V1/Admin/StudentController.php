@@ -25,7 +25,7 @@ class StudentController extends Controller
         $students_active=User::role('student')->where('status','active')->get();
         $students=[
          'students_active'=>$students_active,
-           'students_not_active'=>$students_not_active
+           'students_inactive'=>$students_not_active
         ];
         return $this->indexOrShowResponse('students', $students);
     }
