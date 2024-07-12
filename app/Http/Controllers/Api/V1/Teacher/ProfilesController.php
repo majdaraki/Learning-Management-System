@@ -44,14 +44,6 @@ class ProfilesController extends Controller
     public function show()
     {
         $teacher = Auth::user()->withCount('courses')->where('id',Auth::id())->first();
-        // $courses = $teacher->courses->each(function ($course) {
-        //     return $course->withCount('students');
-        // });
-        // [
-        //     'courses' => function ($course) {
-        //         return $course->withCount('students');
-        //     }
-        // ]
         return $this->indexOrShowResponse('teacher', $teacher);
     }
 
