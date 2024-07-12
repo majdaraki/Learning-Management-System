@@ -8,6 +8,14 @@ use Illuminate\Auth\Access\Response;
 
 class CoursePolicy
 {
+    public function before(User $user, string $ability): bool|null
+    {
+        if ($user->hasRole('admin')) {
+            return true;
+        }
+        return null;
+    }
+
     /**
      * Determine whether the user can view any models.
      */
@@ -37,7 +45,7 @@ class CoursePolicy
      */
     public function update(User $user, Course $course): bool
     {
-        return true;
+        return ($user->hasRole('student') || $user->id===$course->teacher_id);
     }
 
     /**
@@ -45,6 +53,6 @@ class CoursePolicy
      */
     public function delete(User $user, Course $course): bool
     {
-        return $user->isEnrolledInCourse($course);
+        return ($user->isEnrolledInCourse($course) || $user->id===$course->teacher_id);
     }
 }

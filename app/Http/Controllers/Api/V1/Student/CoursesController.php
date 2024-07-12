@@ -10,11 +10,11 @@ use App\Http\Requests\Api\V1\Student\{
 };
 use App\Http\Resources\CourseResource;
 use App\Models\Course;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\{
     Auth,
     DB
 };
-use Illuminate\Auth\Access\AuthorizationException;
 
 
 class CoursesController extends Controller
@@ -33,7 +33,13 @@ class CoursesController extends Controller
      */
     public function index()
     {
-        $courses = $this->courseFilters->applyFilters(Course::query())->with('teacher')->active()->get();
+        $courses = $this->courseFilters->applyFilters(Course::query())->with([
+            'teacher',
+            'enrollments' => function ($query) {
+                return $query->where('user_id', Auth::id());
+            }
+        ])->active()->get();
+
         return $this->indexOrShowResponse('courses', $courses);
     }
 
@@ -71,7 +77,7 @@ class CoursesController extends Controller
      */
     public function show(Course $course)
     {
-        throw_if($course->status != 'active' , new AuthorizationException());
+        throw_if($course->status != 'active', (new ModelNotFoundException)->setModel(Course::class));
         return $this->indexOrShowResponse('course', new CourseResource($course->load(['quizzes.questions.choices', 'teacher'])->append('videos')));
     }
 
@@ -80,6 +86,8 @@ class CoursesController extends Controller
      */
     public function update(UpdateEnrollmentRequest $request, Course $course)
     {
+        throw_if($course->status != 'active', (new ModelNotFoundException)->setModel(Course::class));
+
         return DB::transaction(function () use ($request, $course) {
             $student = Auth::user();
 
@@ -107,6 +115,8 @@ class CoursesController extends Controller
      */
     public function destroy(Course $course)
     {
+        throw_if($course->status != 'active', (new ModelNotFoundException)->setModel(Course::class));
+
         return DB::transaction(function () use ($course) {
             $student = Auth::user();
             $enrollment = $student->enrollments()->where('course_id', $course->id)->firstOrFail();
