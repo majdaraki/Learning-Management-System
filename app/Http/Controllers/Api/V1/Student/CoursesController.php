@@ -40,6 +40,7 @@ class CoursesController extends Controller
             }
         ])->active()->get();
 
+        $courses = $this->costumizeCourses($courses);
         return $this->indexOrShowResponse('courses', $courses);
     }
 
@@ -178,5 +179,22 @@ class CoursesController extends Controller
             return;
 
         });
+    }
+
+    public function costumizeCourses($courses)
+    {
+        foreach ($courses as $course) {
+            if (!$course->enrollments->isEmpty()) {
+                $course['is_favorite'] = $course['enrollments'][0]['is_favorite'];
+                $course['student_has_enrolled'] = $course['enrollments'][0]['student_has_enrolled'];
+                $course['progress'] = $course['enrollments'][0]['progress'];
+            } else {
+                $course['is_favorite'] = false;
+                $course['student_has_enrolled'] = false;
+                $course['progress'] = 0.0;
+            }
+            unset($course->enrollments);
+        }
+        return $courses;
     }
 }
