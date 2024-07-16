@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1\Student;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Student\StoreQuizAnswersRequest;
+use App\Http\Requests\Api\V1\Student\UpdateQuizAnswersRequest;
 use App\Models\{
     Choice,
     Quiz
@@ -76,23 +77,29 @@ class QuizzesController extends Controller
                     'grade' => $grade,
                 ]);
 
-            $progress = $request->quiz_number / $quizzes_count * 100;
-            $student->enrollments()
-                ->where('course_id', $course->id)
-                ->update(['progress' => $progress]);
+            if ($grade >= 60) {
+                $progress = $request->quiz_number / $quizzes_count * 100;
+                $student->enrollments()
+                    ->where('course_id', $course->id)
+                    ->update(['progress' => $progress]);
 
-            if ($progress == 100) {
-                $wallet->points += 100;
-                $wallet->save();
+                if ($progress == 100) {
+                    $wallet->points += 100;
+                    $wallet->save();
+
+                    return response()->json([
+                        'message' => 'Congrats! You\'ve earned extra 100 points for completing this course.',
+                        'grade' => $grade,
+                    ]);
+                }
 
                 return response()->json([
-                    'message' => 'Congrats! You\'ve earned extra 100 points for completing this course.',
+                    'message' => 'Congratiolations!',
                     'grade' => $grade,
                 ]);
             }
-
             return response()->json([
-                'message' => 'Congratiolations!',
+                'message' => 'Sorry! you got less than 60, you have to re do the quiz later.',
                 'grade' => $grade,
             ]);
 
@@ -119,19 +126,17 @@ class QuizzesController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Quiz $quiz)
-    {dd('not working yet.');
+    public function update(UpdateQuizAnswersRequest $request, Quiz $quiz)
+    {dd('come back later');
         return DB::transaction(function () use ($request, $quiz) {
             $student = Auth::user();
             $wallet = $student->wallet;
-            // $quiz = Quiz::findOrFail($request->quiz_id);
             $course = $quiz->course;
             $quizzes_count = $course->quizzes()->count();
             $questions_count = $quiz->questions()->count();
             $correct_answers_count = 0;
 
             foreach ($request->answers as $answer) {
-
                 try {
                     $choice = Choice::where('question_id', $answer['question_id'])->find($answer['chosen_choice_id']);
 
@@ -147,65 +152,46 @@ class QuizzesController extends Controller
 
                 ($choice->is_correct) ? $correct_answers_count++ : '';
 
-                $data = [
-                    'user_id' => $student->id,
-                    'question_id' => $answer['question_id'],
-                    'chosen_choice_id' => $answer['chosen_choice_id'],
-                ];
-
-                Answer::updateOrInsert(
-                    ['user_id' => $student->id, 'question_id' => $answer['question_id']],
-                    $data
-                );
+                $student->answers()
+                    ->where('user_id', $student->id)
+                    ->where('question_id', $answer['question_id'])
+                    ->update(['chosen_choice_id' => $answer['chosen_choice_id']]);
             }
+
             $grade = $correct_answers_count / $questions_count * 100;
 
-            $data = [
-                'user_id' => $student->id,
-                'quiz_id' => $quiz->id,
-                'grade' => $grade,
-            ];
+            $student->results()
+                ->where('quiz_id', $request->quiz_id)
+                ->update(['grade' => $grade]);
 
-            Result::updateOrInsert(
-                ['user_id' => $student->id, 'quiz_id' => $quiz->id],
-                $data
-            );
+            if ($grade >= 60) {
+                $progress = $request->quiz_number / $quizzes_count * 100;
+                $student->enrollments()
+                    ->where('course_id', $course->id)
+                    ->update(['progress' => $progress]);
 
-            // $student->results()->where('quiz_id', $request->quiz_id)
-            //     ->update(['grade' => $grade]);
+                if ($progress == 100) {
+                    $wallet->points += 100;
+                    $wallet->save();
 
-            $progress = $request->quiz_number / $quizzes_count * 100;
-            $enrollment = $student->enrollments()
-                ->where('course_id', $course->id)
-                ->firstOrCreate(values: array_merge(['course_id' => $course->id], $request->only('is_favorite')));
-
-            if (!is_null($enrollment)) {
-                $enrollment->update(['progress' => $progress]);
-            }
-
-            // $student->enrollments()
-            //     ->where('course_id', $course->id)
-            //     ->update(['progress' => $progress]);
-
-            if ($progress == 100) {
-                $wallet->points += 100;
-                $wallet->save();
+                    return response()->json([
+                        'message' => 'Congrats! You\'ve earned extra 100 points for completing this course.',
+                        'grade' => $grade,
+                    ]);
+                }
 
                 return response()->json([
-                    'message' => 'Congrats! You\'ve earned extra 100 points for completing this course.',
+                    'message' => 'Congratulations!',
                     'grade' => $grade,
                 ]);
             }
 
             return response()->json([
-                'message' => 'Congratiolations!',
+                'message' => 'Sorry! You got less than 60. You have to redo the quiz later.',
                 'grade' => $grade,
             ]);
-
         });
-
     }
-
     /**
      * Remove the specified resource from storage.
      */
