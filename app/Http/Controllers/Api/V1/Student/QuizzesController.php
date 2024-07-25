@@ -127,7 +127,7 @@ class QuizzesController extends Controller
      * Update the specified resource in storage.
      */
     public function update(UpdateQuizAnswersRequest $request, Quiz $quiz)
-    {dd('come back later');
+    {
         return DB::transaction(function () use ($request, $quiz) {
             $student = Auth::user();
             $wallet = $student->wallet;
@@ -135,6 +135,9 @@ class QuizzesController extends Controller
             $quizzes_count = $course->quizzes()->count();
             $questions_count = $quiz->questions()->count();
             $correct_answers_count = 0;
+            $questions_ids = ($quiz->questions()->pluck('id')->toArray());
+            // Delete all previous answers for the student for this quiz
+            $student->answers()->whereIn('question_id', $questions_ids)->delete();
 
             foreach ($request->answers as $answer) {
                 try {
@@ -152,16 +155,14 @@ class QuizzesController extends Controller
 
                 ($choice->is_correct) ? $correct_answers_count++ : '';
 
-                $student->answers()
-                    ->where('user_id', $student->id)
-                    ->where('question_id', $answer['question_id'])
-                    ->update(['chosen_choice_id' => $answer['chosen_choice_id']]);
+                // Create new answers for the student
+                $student->answers()->create($answer);
             }
 
             $grade = $correct_answers_count / $questions_count * 100;
 
             $student->results()
-                ->where('quiz_id', $request->quiz_id)
+                ->where('quiz_id', $quiz->id)
                 ->update(['grade' => $grade]);
 
             if ($grade >= 60) {
