@@ -69,7 +69,8 @@ class QuizzesController extends Controller
                 ($choice->is_correct) ? $correct_answers_count++ : '';
                 $student->answers()->create($answer);
             }
-            $grade = $correct_answers_count / $questions_count * 100;
+
+            $grade = (int) ($correct_answers_count / $questions_count * 100);
 
             $student->results()
                 ->create([
@@ -159,7 +160,7 @@ class QuizzesController extends Controller
                 $student->answers()->create($answer);
             }
 
-            $grade = $correct_answers_count / $questions_count * 100;
+            $grade = (int) ($correct_answers_count / $questions_count * 100);
 
             $student->results()
                 ->where('quiz_id', $quiz->id)
