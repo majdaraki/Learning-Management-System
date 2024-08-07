@@ -49,7 +49,7 @@ class ProfilesController extends Controller
         $courses = $student->coursesEnrollments
             ->map(function ($course) {
                 $course['is_favorite'] = $course['pivot']['is_favorite'];
-                unset ($course->pivot);
+                unset($course->pivot);
                 return $course;
             });
         return response()->json([
@@ -79,8 +79,12 @@ class ProfilesController extends Controller
             if ($request->hasFile('image')) {
                 $request_image = $request->image;
                 $current_image = $student->image()->pluck('name')->first();
-                $image = $this->setMediaName([$request_image],'Students')[0];
-                $student->image()->update(['name' => $image]);
+                $image = $this->setMediaName([$request_image], 'Students')[0];
+                if ($current_image) {
+                    $student->image()->update(['name' => $image]);
+                } else {
+                    $student->image()->create(['name' => $image]);
+                }
                 $this->saveMedia([$request_image], [$image], 'public');
                 $this->deleteMedia('storage', [$current_image]);
             }
