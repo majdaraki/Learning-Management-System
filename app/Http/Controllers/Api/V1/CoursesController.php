@@ -102,7 +102,11 @@ class CoursesController extends Controller
                 $request_image = $request1->image;
                 $current_image = $course->image()->pluck('name')->first();
                 $image = $this->setMediaName([$request_image], 'Courses')[0];
-                $course->image()->update(['name' => $image]);
+                if ($current_image) {
+                    $course->image()->update(['name' => $image]);
+                } else {
+                    $course->image()->create(['name' => $image]);
+                }
                 $this->saveMedia([$request_image], [$image], 'public');
                 $this->deleteMedia('storage', [$current_image]);
             }
