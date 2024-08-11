@@ -25,7 +25,7 @@ class WalletsController extends Controller
         $newBalance = $request->balance + $user->wallet->balance;
         $user->wallet->update(['balance' => $newBalance]);
         return $this->sudResponse('balance has been sent to wallet');
-
+/*"Balance transferred to your wallet"*/
     }
 
 }

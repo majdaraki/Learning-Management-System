@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api\V1\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\updateStatusForTeacherOrStident;
 use App\Http\Requests\Api\V1\Admin\{
     UpdateStatus
 };
@@ -75,6 +77,8 @@ class StudentsController extends Controller
     public function update(UpdateStatus $request, User $student)
     {
        $student->update($request->all());
+       Notification::route('mail', $student->email)
+       ->notify(new updateStatusForTeacherOrStident($student, $request->status));
         return $this->sudResponse('update status of student');
     }
 
