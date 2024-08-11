@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\{
     DB
 };
 use App\Traits\Media;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\UpdateBalanceInWallet;
 class WalletsController extends Controller
 {
     use Media;
@@ -24,8 +26,10 @@ class WalletsController extends Controller
         $user=User::FindOrFail($id);
         $newBalance = $request->balance + $user->wallet->balance;
         $user->wallet->update(['balance' => $newBalance]);
+        Notification::route('mail', $user->email)
+        ->notify(new UpdateBalanceInWallet($user, $request->balance,$newBalance));
         return $this->sudResponse('balance has been sent to wallet');
-/*"Balance transferred to your wallet"*/
+
     }
 
 }
