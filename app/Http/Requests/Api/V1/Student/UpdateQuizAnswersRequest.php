@@ -23,12 +23,11 @@ class UpdateQuizAnswersRequest extends FormRequest
      */
     public function rules(): array
     {
-        $quizzes_count = Quiz::findOrFail($this->input('quiz_id'))->course->quizzes()->count();
+        $quizzes_count = $this->quiz->course->quizzes()->count();
         return [
-            'quiz_id' => ['required', 'exists:quizzes,id'],
             'quiz_number' => ['required', 'integer', 'min:1', "max:$quizzes_count"],
             'answers' => ['required', 'array'],
-            'answers.*.question_id' => ['required', 'distinct', new QuestionsBelongToQuiz($this->input('quiz_id'))],
+            'answers.*.question_id' => ['required', 'distinct', new QuestionsBelongToQuiz($this->quiz->id)],
             'answers.*.chosen_choice_id' => ['required', 'distinct']
         ];
     }

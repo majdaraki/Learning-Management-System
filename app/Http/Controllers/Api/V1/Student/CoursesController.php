@@ -79,7 +79,16 @@ class CoursesController extends Controller
     public function show(Course $course)
     {
         throw_if($course->status != 'active', (new ModelNotFoundException)->setModel(Course::class));
-        return $this->indexOrShowResponse('course', new CourseResource($course->load(['quizzes.questions.choices', 'teacher'])->append('videos')));
+        return $this->indexOrShowResponse(
+            'course',
+            new CourseResource($course->load([
+                'quizzes.questions.choices',
+                'teacher',
+                'enrollments' => function ($query) {
+                    return $query->where('user_id', Auth::id());
+                }
+            ])->append('videos'))
+        );
     }
 
     /**
