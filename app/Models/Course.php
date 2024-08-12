@@ -107,7 +107,21 @@ class Course extends BaseModel
         return $this->morphOne(Image::class, 'imageable');
     }
 
-    public function Students(): BelongsToMany
+    public function enrollments() : HasMany {
+        return $this->hasMany(Enrollment::class);
+    }
+
+    public function students(): BelongsToMany
+    {
+        return $this->belongsToMany(Course::class, 'enrollments')
+            ->withPivot([
+                'is_favorite',
+                'student_has_enrolled',
+                'progress'
+            ]);
+    }
+
+    public function enrolledStudents(): BelongsToMany
     {
         return $this->belongsToMany(Course::class, 'enrollments')
             ->withPivot([

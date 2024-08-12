@@ -10,11 +10,11 @@ use App\Http\Requests\Api\V1\Student\{
 };
 use App\Http\Resources\CourseResource;
 use App\Models\Course;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\{
     Auth,
     DB
 };
-use Illuminate\Auth\Access\AuthorizationException;
 
 
 class CoursesController extends Controller
@@ -33,7 +33,14 @@ class CoursesController extends Controller
      */
     public function index()
     {
-        $courses = $this->courseFilters->applyFilters(Course::query())->with('teacher')->active()->get();
+        $courses = $this->courseFilters->applyFilters(Course::query())->with([
+            'teacher',
+            'enrollments' => function ($query) {
+                return $query->where('user_id', Auth::id());
+            }
+        ])->active()->get();
+
+        $courses = $this->costumizeCourses($courses);
         return $this->indexOrShowResponse('courses', $courses);
     }
 
@@ -71,8 +78,17 @@ class CoursesController extends Controller
      */
     public function show(Course $course)
     {
-        throw_if($course->status != 'active' , new AuthorizationException());
-        return $this->indexOrShowResponse('course', new CourseResource($course->load(['quizzes.questions.choices', 'teacher'])->append('videos')));
+        throw_if($course->status != 'active', (new ModelNotFoundException)->setModel(Course::class));
+        return $this->indexOrShowResponse(
+            'course',
+            new CourseResource($course->load([
+                'quizzes.questions.choices',
+                'teacher',
+                'enrollments' => function ($query) {
+                    return $query->where('user_id', Auth::id());
+                }
+            ])->append('videos'))
+        );
     }
 
     /**
@@ -80,6 +96,8 @@ class CoursesController extends Controller
      */
     public function update(UpdateEnrollmentRequest $request, Course $course)
     {
+        throw_if($course->status != 'active', (new ModelNotFoundException)->setModel(Course::class));
+
         return DB::transaction(function () use ($request, $course) {
             $student = Auth::user();
 
@@ -107,6 +125,8 @@ class CoursesController extends Controller
      */
     public function destroy(Course $course)
     {
+        throw_if($course->status != 'active', (new ModelNotFoundException)->setModel(Course::class));
+
         return DB::transaction(function () use ($course) {
             $student = Auth::user();
             $enrollment = $student->enrollments()->where('course_id', $course->id)->firstOrFail();
@@ -168,5 +188,22 @@ class CoursesController extends Controller
             return;
 
         });
+    }
+
+    public function costumizeCourses($courses)
+    {
+        foreach ($courses as $course) {
+            if (!$course->enrollments->isEmpty()) {
+                $course['is_favorite'] = $course['enrollments'][0]['is_favorite'];
+                $course['student_has_enrolled'] = $course['enrollments'][0]['student_has_enrolled'];
+                $course['progress'] = $course['enrollments'][0]['progress'];
+            } else {
+                $course['is_favorite'] = false;
+                $course['student_has_enrolled'] = false;
+                $course['progress'] = 0.0;
+            }
+            unset($course->enrollments);
+        }
+        return $courses;
     }
 }

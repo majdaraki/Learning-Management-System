@@ -10,6 +10,9 @@ class Answer extends BaseModel
 {
     use HasFactory;
 
+    protected $primaryKey = ['user_id', 'question_id'];
+    public $incrementing = false;
+
     /**
      * The attributes that are mass assignable.
      *

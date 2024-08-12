@@ -43,15 +43,7 @@ class ProfilesController extends Controller
      */
     public function show()
     {
-        $teacher = Auth::user()->withCount('courses')->where('id',Auth::id())->first();
-        // $courses = $teacher->courses->each(function ($course) {
-        //     return $course->withCount('students');
-        // });
-        // [
-        //     'courses' => function ($course) {
-        //         return $course->withCount('students');
-        //     }
-        // ]
+        $teacher = Auth::user()->withCount('courses')->where('id', Auth::id())->first();
         return $this->indexOrShowResponse('teacher', $teacher);
     }
 
@@ -77,7 +69,11 @@ class ProfilesController extends Controller
                 $request_image = $request->image;
                 $current_image = $teacher->image()->pluck('name')->first();
                 $image = $this->setMediaName([$request_image], 'Teachers')[0];
-                $teacher->image()->update(['name' => $image]);
+                if ($current_image) {
+                    $teacher->image()->update(['name' => $image]);
+                } else {
+                    $teacher->image()->create(['name' => $image]);
+                }
                 $this->saveMedia([$request_image], [$image], 'public');
                 $this->deleteMedia('storage', [$current_image]);
             }
