@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\Teacher\Auth\{
     ForgetPassword,
     RegisterController,
-    LoginController,
+   // LoginController,
     ResetPassword
 };
 
@@ -12,8 +12,8 @@ use App\Http\Controllers\Api\V1\Teacher\Auth\{
 // Auth Routes
 
 Route::prefix('teachers/auth/')->group(function () {
-Route::post('login', [LoginController::class, 'create']);
-Route::get('logout', [LoginController::class, 'destroy'])->middleware('auth:sanctum');
+//Route::post('login', [LoginController::class, 'create']);
+//Route::get('logout', [LoginController::class, 'destroy'])->middleware('auth:sanctum');
 
 Route::post('register', [RegisterController::class, 'create']);
 Route::post('check-code',[RegisterController::class,'verify']);

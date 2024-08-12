@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\{
     Auth,
     DB
 };
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\updateStatusForTeacherOrStident;
 use App\Traits\Media;
 class TeachersController extends Controller
 {
@@ -28,7 +30,7 @@ class TeachersController extends Controller
          'teachers_active'=>$teacher_active,
            'teachers_inactive'=>$teachers_not_active
         ];
-        return $this->indexOrShowResponse('students', $teachers);
+        return $this->indexOrShowResponse('teacher', $teachers);
     }
 
     /**
@@ -73,6 +75,8 @@ class TeachersController extends Controller
     public function update(UpdateStatus $request, User $teacher)
     {
         $teacher->update($request->all());
+        Notification::route('mail', $teacher->email)
+        ->notify(new updateStatusForTeacherOrStident($teacher, $request->status));
         return $this->sudResponse('update status of Teacher');
     }
 
