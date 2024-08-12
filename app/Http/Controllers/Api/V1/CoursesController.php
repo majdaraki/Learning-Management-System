@@ -14,7 +14,8 @@ use App\Http\Requests\Api\V1\Teacher\{
 };
 use App\Http\Controllers\Controller;
 use App\Models\{
-    Course
+    Course,
+    User
 };
 use App\Traits\Media;
 use Illuminate\Http\Request;
@@ -22,6 +23,9 @@ use Illuminate\Support\Facades\{
     Auth,
     DB
 };
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\CreateCourses;
+use App\Notifications\UpdateStatusForCourse;
 use App\Filters\CourseFilters;
 use Illuminate\Auth\Access\AuthorizationException;
 
@@ -63,7 +67,6 @@ class CoursesController extends Controller
     {
         return DB::transaction(function () use ($request) {
             $teacher = Auth::user();
-
             $course = $teacher->courses()->create($request->all());
 
             if ($request->hasFile('image')) {
@@ -72,6 +75,12 @@ class CoursesController extends Controller
                 $course->image()->create(['name' => $image]);
                 $this->saveMedia([$request_image], [$image], 'public');
             }
+            $students=User::role('student')->get();
+            foreach($students as $student){
+                Notification::route('mail', $student->email)
+                ->notify(new CreateCourses($student,$course->name,$teacher));
+            }
+
             return $this->sudResponse('Course created successfully', 201);
         });
     }
@@ -91,10 +100,15 @@ class CoursesController extends Controller
 
     public function update(UpdateCourseRequest $request1, UpdateStatus $request2, Course $course)
     {
-        return DB::transaction(function () use ($request1, $request2, $course) {
+
+       $teacher=$course->teacher;
+        //$this->authorize('update',$course);
+        return DB::transaction(function () use ($request1, $request2,$course,$teacher) {
             $user = Auth::user();
             $course->update($request1->validated());
-            if ($user->hasRole('admin')) {
+            if($user->hasRole('admin')){
+                Notification::route('mail', $teacher->email)
+                ->notify(new UpdateStatusForCourse($teacher,$request2->status,$course->name));
                 $course->update($request2->validated());
             }
 

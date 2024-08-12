@@ -27,7 +27,7 @@ class UpdateWallet extends FormRequest
     public function rules(): array
     {
         return [
-            'balance'=>'required|numeric|min:0',
+            'balance'=>'required|min:0',
         ];
     }
 

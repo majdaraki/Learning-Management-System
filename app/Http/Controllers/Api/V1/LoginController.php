@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1\Teacher\Auth;
+namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\Auth\LoginRequest;
@@ -21,7 +21,7 @@ class LoginController extends Controller
         $token = $teacher->createToken('access_token')->plainTextToken;
 
         return response()->json([
-            'message' => 'Teacher logged in successfully.',
+            'message' => 'logged in successfully.',
             'Teacher'=>$teacher,
             'access_token' => $token,
         ]);
