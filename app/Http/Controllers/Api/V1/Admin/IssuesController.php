@@ -13,8 +13,7 @@ class IssuesController extends Controller
      */
     public function index()
     {
-        $issues = Issue::latest()->get();
-        return $this->indexOrShowResponse('issues',$issues);
+        $issues = Issue::with('user')->latest()->get();
+        return $this->indexOrShowResponse('issues', $issues);
     }
-
 }

@@ -31,7 +31,8 @@ Route::prefix('admins/')
         Route::apiResource('students',StudentsController::class);
         Route::apiResource('teachers',TeachersController::class);
        
-        Route::put('wallets/{id}',[WalletsController::class,'update']);
+        // Route::put('wallets/{id}',[WalletsController::class,'update']);
+        Route::post('wallets/{id}',[WalletsController::class,'update']);
 
         Route::apiResource('issues',IssuesController::class)->only('index');
     });
