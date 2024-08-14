@@ -22,8 +22,8 @@ Route::prefix('web/')
     ->group(function () {
 
         Route::apiResource('courses', CoursesController::class);
-        Route::apiResource('courses.videos', CourseVideosController::class);
+       /* Route::apiResource('courses.videos', CourseVideosController::class);
         Route::apiResource('courses.quizzess', CourseQuizzesController::class);
-        Route::apiResource('quizzes.questions', QuizQuestionsController::class);
+        Route::apiResource('quizzes.questions', QuizQuestionsController::class);*/
 
     });

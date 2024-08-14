@@ -20,9 +20,20 @@ class LoginController extends Controller
 
         $token = $teacher->createToken('access_token')->plainTextToken;
 
+        $roleName = $teacher->getRoleNames()[0];
+
         return response()->json([
             'message' => 'logged in successfully.',
-            'Teacher'=>$teacher,
+            'Teacher' => [
+                'id' => $teacher->id,
+                'first_name' => $teacher->first_name,
+                'last_name' => $teacher->last_name,
+                'email' => $teacher->email,
+                'status' => $teacher->status,
+                'created_from' => $teacher->created_from,
+                'image' => $teacher->image,
+                'role' =>$roleName,
+            ],
             'access_token' => $token,
         ]);
     }
