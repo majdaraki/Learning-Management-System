@@ -27,8 +27,8 @@ Route::prefix('teachers/')
         Route::put('profile', [ProfilesController::class, 'update']);
         Route::delete('profile', [ProfilesController::class, 'destroy']);
 
-        /*Route::apiResource('courses', CoursesController::class);
+        //Route::apiResource('courses', CoursesController::class);
         Route::apiResource('courses.videos', CourseVideosController::class);
         Route::apiResource('courses.quizzess', CourseQuizzesController::class);
-        Route::apiResource('quizzes.questions', QuizQuestionsController::class);*/
+        Route::apiResource('quizzes.questions', QuizQuestionsController::class);
     });

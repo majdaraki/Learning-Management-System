@@ -12,8 +12,11 @@ use App\Http\Controllers\Api\V1\{
     CourseVideosController,
     CourseQuizzesController,
     QuizQuestionsController,
+    ChatController,
+
 
 };
+//use App\Http\Controllers\Api\V1\ChatController;
 
 
 Route::prefix('web/')
@@ -25,5 +28,6 @@ Route::prefix('web/')
        /* Route::apiResource('courses.videos', CourseVideosController::class);
         Route::apiResource('courses.quizzess', CourseQuizzesController::class);
         Route::apiResource('quizzes.questions', QuizQuestionsController::class);*/
+        Route::post('message',[ChatController::class,'message']);
 
     });
