@@ -9,7 +9,8 @@ use App\Http\Controllers\Api\V1\{
 };
 use App\Http\Controllers\Api\V1\Teacher\{
     ProfilesController,
-    CategoriesController
+    CategoriesController,
+    AdminsController
 
 };
 
@@ -26,6 +27,7 @@ Route::prefix('teachers/')
         Route::get('profile', [ProfilesController::class, 'show']);
         Route::put('profile', [ProfilesController::class, 'update']);
         Route::delete('profile', [ProfilesController::class, 'destroy']);
+        Route::apiResource('admins',AdminsController::class);
 
         //Route::apiResource('courses', CoursesController::class);
         Route::apiResource('courses.videos', CourseVideosController::class);
